@@ -1,0 +1,33 @@
+{
+  "name": "px-module",
+  "version": "0.0.0",
+  "homepage": "https://github.com/wesleifreitas/px-module",
+  "private": true,
+  "authors": [
+    "Weslei Freitas <weslei.rfreitas@gmail.com>"
+  ],
+  "description": "Phoenix Project",
+  "main": "./dist/px-module.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "px-module"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "docs",
+    "src"
+  ],
+  "dependencies": {
+    "angular": "~1.5.7",
+    "angular-ui-mask": "~1.8.6",
+    "bootstrap": "~3.3.6"
+  }
+}
