@@ -28,6 +28,8 @@
   "dependencies": {
     "angular": "~1.5.7",
     "angular-ui-mask": "~1.8.6",
-    "bootstrap": "~3.3.6"
+    "bootstrap": "~3.3.6",
+    "numeral": "~1.5.3",
+    "angular-i18n": "~1.5.7"
   }
 }
