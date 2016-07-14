@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="demo">
+
+<head>
+    <meta charset="utf-8">
+    <title>px-module</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.js"></script>
+    <link rel="stylesheet" href="../../src/lib/bootstrap/dist/css/bootstrap.css">
+    <!-- dist -->
+    <!-- <script src="../dist/[..]"></script> -->
+    <!-- form-item dependencies -->
+    <script src="../../src/lib/angular-i18n/angular-locale_pt-br.js"></script>
+    <script src="../../src/lib/angular-ui-mask/dist/mask.min.js"></script>
+    <script src="../../src/lib/numeral/min/numeral.min.js"></script>
+    <script src="../../src/lib/numeral/min/languages.min.js"></script>
+    <script src="../../src/system/components/px-form-item/px-form-item.js"></script>
+    <script src="../../src/system/components/utils/js/px-string-util.js"></script>
+    <!-- form-item -->
+    <script src="../../src/system/components/px-form-item/px-form-item.js"></script>
+    <!-- app -->
+    <script src="app.js"></script>
+</head>
+
+<body class="container" ng-controller="FormItemCtrl">
+    <section id="mask">
+        <div class="page-header">
+            <h1>Phoenix Module (form-item)
+                <small><a href="https://github.com/wesleifreitas/px-module" target="_blank">GitHub</a></small>
+            </h1>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>px-enter</h3>
+                <p>Chamar função ao teclar enter.</p>
+                <form name="demo" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-9">
+                            <pre class="prettyprint">&lt;input type=&quot;text&quot; px-enter=&quot;myFunction()&quot;/&gt;</pre>
+                            <input type="text" class="form-control" id="enter" name="enter" px-enter="enter($event)" />
+                            <span class="help-inline">
+                                <div>Clique no input e tecle <code>enter</code> {{enterTime}}</div>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h3>px-cpf-mask</h3>
+                <p>Definir máscaras para campos (com base em <a href="https://htmlpreview.github.io/?https://github.com/angular-ui/ui-mask/master/demo/index.html" target="_blank">ui-mask</a>).</p>
+                <form name="demo" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-9">
+                            <pre class="prettyprint">&lt;input type=&quot;text&quot; ng-model=&quot;cpf&quot; px-cpf-mask/&gt;</pre>
+                            <input type="text" class="form-control" id="cpf" name="cpf" ng-model="cpf" px-cpf-mask/>
+                            <span class="help-inline">
+                                <div>Use também: <code>px-cnpj-mask</code>, <code>px-br-phone-mask px-ddd="true"</code>, <code>px-br-cep-mask</code>, <a href="https://htmlpreview.github.io/?https://github.com/angular-ui/ui-mask/master/demo/index.html" target="_blank"><code>ui-mask</code> (dependencie)</a></div>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>px-number-mask</h3>
+                <p>Definir máscaras para números.</p>
+                <form name="demo" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-9">
+                            <pre class="prettyprint">&lt;input type=&quot;text&quot; ng-model=&quot;cpf&quot; px-number-mask/&gt;</pre>
+                            <input type="text" class="form-control" id="number" name="number" ng-model="number" px-number-mask />
+                            <span class="help-inline">
+                                <div></div>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </section>
+</body>
+
+</html>
