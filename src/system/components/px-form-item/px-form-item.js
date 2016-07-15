@@ -43,7 +43,7 @@ angular.module('px-form-item', [])
 	}])
 	// pxCnpjMask
 	// 99.999.999/9999-99
-	.directive('pxCnpjMask', ['pxStringUtil', '$compile', function(pxStringUtil, $compile) {
+	.directive('pxCnpjMask', ['$compile', function($compile) {
 		return {
 			priority: 100,
 			restrict: 'A',
