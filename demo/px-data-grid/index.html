@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="demo">
+
+<head>
+    <meta charset="utf-8">
+    <title>px-module</title>
+    <!-- css -->
+    <link rel="stylesheet" href="../../src/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="http://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="../../src/system/components/px-data-grid/px-data-grid.css">
+    <!-- angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.js"></script>
+    <!-- dist -->
+    <!-- <script src="../dist/[..]"></script> -->
+    <!-- data-grid dependencies -->
+    <script src="../../src/lib/angular-i18n/angular-locale_pt-br.js"></script>
+    <script src="../../src/lib/angular-ui-mask/dist/mask.min.js"></script>
+    <script src="../../src/lib/numeral/min/numeral.min.js"></script>
+    <script src="../../src/lib/moment/min/moment-with-locales.min.js"></script>
+    <script src="../../src/lib/numeral/min/languages.min.js"></script>
+    <script src="../../src/lib/jquery/dist/jquery.min.js"></script>
+    <script src="../../src/lib/datatables/media/js/jquery.dataTables.min.js"></script>
+    <!-- px-config -->
+    <script src="px-config.js"></script>
+    <!-- px-utils -->
+    <script src="../../src/system/components/utils/js/px-util.js"></script>
+    <script src="../../src/system/components/utils/js/px-array-util.js"></script>
+    <script src="../../src/system/components/utils/js/px-mask-util.js"></script>
+    <script src="../../src/system/components/utils/js/px-string-util.js"></script>
+    <!-- px-data-grid -->
+    <script src="../../src/system/components/px-data-grid/px-data-grid.service.js"></script>
+    <script src="../../src/system/components/px-data-grid/px-data-grid.js"></script>
+    <!-- app -->
+    <script src="app.js"></script>
+</head>
+
+<body class="container" ng-controller="DataGridCtrl">
+    <section id="mask">
+        <div class="page-header">
+            <h1>Phoenix Module (px-data-grid)
+                <small><a href="https://github.com/wesleifreitas/px-module" target="_blank">GitHub</a></small>
+            </h1>
+        </div>
+        <div class="row pull-right">
+            <div class="col-md-12">
+                <button class="btn btn-default" ng-click="addDataRow()">Adicionar</button>
+                <button class="btn btn-default" ng-click="removeRow()">Remover</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <px-data-grid id="dgExemplo" px-debug="true" px-control="dgExemploControl" px-init="dgExemploInit()" px-config="{{dgExemploConfig}}" px-data-init="false" px-check="true" px-edit="true" px-item-edit="edit(event)">
+                </px-data-grid>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
