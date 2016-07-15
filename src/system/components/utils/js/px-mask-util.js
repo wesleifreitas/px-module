@@ -1,5 +1,5 @@
-angular.module('px-util', [])
-    .factoryfactory('pxMaskUtil', pxMaskUtil);
+angular.module('px-mask-util', [])
+    .factory('pxMaskUtil', pxMaskUtil);
 
 pxMaskUtil.$inject = [];
 

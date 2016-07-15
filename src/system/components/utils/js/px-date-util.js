@@ -1,4 +1,4 @@
-angular.module('px-util', [])
+angular.module('px-date-util', [])
     .factory('pxDateUtil', pxDateUtil);
 
 pxDateUtil.$inject = [];

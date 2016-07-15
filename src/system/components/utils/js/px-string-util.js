@@ -1,4 +1,4 @@
-angular.module('px-util', [])
+angular.module('px-string-util', [])
     .factory('pxStringUtil', pxStringUtil);
 
 pxStringUtil.$inject = [];

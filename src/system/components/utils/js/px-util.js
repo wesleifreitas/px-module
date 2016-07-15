@@ -1,9 +1,10 @@
 angular.module('px-util', [])
     .factory('pxUtil', pxUtil);
 
-pxUtil.$inject = ['pxConfig'];
+pxUtil.$inject = [];
 
-function pxUtil(pxConfig) {
+function pxUtil() {
+    
     var service = {};
     service.filterOperator = filterOperator;
     service.setFilterObject = setFilterObject;
@@ -201,22 +202,7 @@ function pxUtil(pxConfig) {
      * Retornar configuração group
      * @return {Object} configuração group
      */
-    function getGroupConfig(table) {
-        var group = {};
-        var table = table || pxConfig.GROUP_TABLE;
-        if (pxConfig.GROUP_SUFFIX === '') {
-            group.item = pxConfig.GROUP_ITEM;
-            group.label = pxConfig.GROUP_LABEL;
-        } else {
-            group.item = table + '_' + pxConfig.GROUP_ITEM_SUFFIX;
-            group.label = table + '_' + pxConfig.GROUP_LABEL_SUFFIX;
-            for (var i = 0; i < pxConfig.GROUP_REPLACE.length; i++) {
-                group.item = group.item.replace(pxConfig.GROUP_REPLACE[i], '');
-                group.label = group.label.replace(pxConfig.GROUP_REPLACE[i], '');
-            };
-        }
-        return group;
-    }
+  
     /**
      * Verificar se o acesso ao sistema é via mobile browser verificando o user agent
      * @return {Boolean}
