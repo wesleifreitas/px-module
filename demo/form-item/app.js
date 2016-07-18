@@ -1,4 +1,4 @@
-var app = angular.module('demo', ['ui.mask', 'px-form-item']);
+var app = angular.module('demo', ['px-form-item']);
 
 app.controller('FormItemCtrl', ['$scope', '$locale', function($scope, $locale) {
 

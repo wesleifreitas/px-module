@@ -1,10 +1,13 @@
-var app = angular.module('demo', ['pxConfig', 'px-util', 'px-array-util', 'px-mask-util', 'px-string-util', 'px-data-grid']);
+var app = angular.module('demo', ['pxConfig', 'px-data-grid']);
 
 app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
 
     // Definir language da lib numeral.js
     // http://numeraljs.com/                                                               
     numeral.language('pt-br');
+    // Definir locale da lib moment.js
+    // http://momentjs.com/docs/
+    moment.locale('pt-BR');
 
     /**
      * Controle da listagem
@@ -37,11 +40,13 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
             }, {
                 title: 'CPF',
                 field: 'cpf',
-                type: 'varchar'
+                type: 'varchar',
+                stringMask: '###.###.###-##'
             }, {
                 title: 'Data',
                 field: 'data',
-                type: 'date'
+                type: 'date',
+                moment: 'dddd - DD/MM/YYYY'
             }]
         };
 
@@ -50,8 +55,8 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
             $scope.dgExemploControl.addDataRow({
                 "id": $scope.countRow++,
                 "nome": "Weslei Freitas",
-                "cpf": "123456789",
-                "data": "2016-07-14T18:43:59.030Z"
+                "cpf": "11111111111",
+                "data": new Date()
             })
         }
 
