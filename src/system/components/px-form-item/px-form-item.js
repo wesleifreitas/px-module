@@ -1,4 +1,4 @@
-angular.module('px-form-item', [])
+angular.module('px-form-item', ['ui.mask'])
 	// pxEnter
 	// Chamar função ao teclar Enter
 	.directive('pxEnter', [function() {
