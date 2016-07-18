@@ -13,6 +13,112 @@ angular.module('px-form-item', ['ui.mask'])
 			});
 		};
 	}])
+	// Validar campos
+	// http://stackoverflow.com/questions/18063561/access-isolated-parent-scope-from-a-transcluded-directive
+	// http://stackoverflow.com/questions/21488803/how-does-one-preserve-scope-with-nested-directives
+	// https://groups.google.com/forum/#!topic/angular/BZqs4TXyOcw 
+	.directive('pxShowError', ['$timeout', '$rootScope', function($timeout, $rootScope) {
+		return {
+			restrict: 'E',
+			require: '^form',
+			replace: true,
+			transclude: false,
+			template: '<p class="help-block px-show-error">{{error}}</p>',
+			scope: {
+				element: '@pxElement',
+				confirm: '@pxConfirm',
+				confirmError: '@pxConfirmError',
+				minLengthError: '@pxMinlengthError'
+			},
+			link: function(scope, element, attrs, formCtrl) {
+				// Chama evento px-init
+				$timeout(scope.init, 0);
+			},
+			controller: ['$scope', function($scope) {
+				// Inicializar validação
+				$scope.init = function() {
+
+					// Armazena mensagem de erro de validação
+					$scope.error = '';
+
+					var selectorName = '#' + $scope.element;
+
+					// Verificar se é filtro group
+					if (angular.isDefined(angular.element($(selectorName + '_groupSearch_inputSearch').get(0)).scope())) {
+						selectorName += '_groupSearch_inputSearch';
+					}
+					// Verificar se o filtro é um px-complete
+					else if (angular.isDefined(angular.element($(selectorName + '_inputSearch').get(0)).scope())) {
+						selectorName += '_inputSearch';
+					}
+
+					// Elemento que será validado
+					var _element = angular.element($(selectorName).get(0));
+					// ngModelController do elemento
+					var _ngModelCtrl = _element.data('$ngModelController');
+
+					var _confirm = angular.element($('#' + $scope.confirm).get(0));
+					var _confirmModelCtrl = _confirm.data('$ngModelController');
+
+					// Eventos keyup blur
+					_element.on('keyup blur', function(event) {
+
+						if (!angular.isDefined(_ngModelCtrl)) {
+							return;
+						}
+
+						// Verificar se possui campo de confirmação
+						if (angular.isDefined($scope.confirm)) {
+							if (String(_confirmModelCtrl.$modelValue) !== String(_ngModelCtrl.$modelValue)) {
+								//_ngModelCtrl.$error.confirm = true;
+								_ngModelCtrl.$setValidity('confirm', false);
+							} else {
+								//_ngModelCtrl.$error.confirm = null;
+								_ngModelCtrl.$setValidity('confirm', true);
+							}
+						}
+
+						// Verificar ser o elemento está inválido
+						if (_ngModelCtrl.$invalid) {
+							$scope.$apply(function() {
+								if (_ngModelCtrl.$error.deps) {
+									$scope.error = _element.scope().depsError;
+								} else if (_ngModelCtrl.$error.required || _ngModelCtrl.$error.requiredsearch) {
+									$scope.error = 'Campo obrigatório';
+								} else if (_ngModelCtrl.$error.email) {
+									$scope.error = 'E-mail inválido';
+								} else if (_ngModelCtrl.$error.minlength) {
+									$scope.error = $scope.minLengthError;
+								} else if (_ngModelCtrl.$error.unique) {
+									$scope.error = 'Campo já existente';
+								} else if (_ngModelCtrl.$error.confirm) {
+									if (!angular.isDefined($scope.confirmError)) {
+										$scope.error = 'Campo não confere';
+									} else {
+										$scope.error = $scope.confirmError;
+									}
+								} else {
+									console.warn('px-show-error:', '$error ausente', _ngModelCtrl.$error);
+								}
+							});
+
+							_element.css({
+								borderColor: '#A94442' //'#DF0707'
+							});
+						} else {
+							$scope.$apply(function() {
+								$scope.error = '';
+							});
+
+							_element.css({
+								borderColor: '#CCCCCC'
+							});
+						}
+					});
+				}
+			}]
+		};
+	}])
 	// pxValidNumber
 	// Digitar somente números
 	.directive('pxValidNumber', [function() {
@@ -182,11 +288,10 @@ angular.module('px-form-item', ['ui.mask'])
 			}]
 		};
 	}])
-
-// pxBrPhoneMask
-// (99) 9999-9999 / (99) 9999-9999?9
-// (99) 99999-999
-.directive('pxBrPhoneMask', ['$compile', function($compile) {
+	// pxBrPhoneMask
+	// (99) 9999-9999 / (99) 9999-9999?9
+	// (99) 99999-999
+	.directive('pxBrPhoneMask', ['$compile', function($compile) {
 		return {
 			priority: 100,
 			restrict: 'A',
@@ -534,3 +639,624 @@ angular.module('px-form-item', ['ui.mask'])
 			}
 		};
 	}])
+	// pxGroupShow
+	// Verificar Group
+	.directive('pxGroupShow', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+		return {
+			restrict: 'A',
+			require: '?ngModel',
+			link: function(scope, element, attrs, ngModelCtrl) {
+				if ($rootScope.globals.currentUser.per_developer !== 1) {
+					element.hide();
+				}
+
+				$timeout(function() {
+					var _element = angular.element($('#' + attrs.pxGroupShow).get(0));
+					var _ngModelCtrl = _element.data('$ngModelController');
+					if (_ngModelCtrl) {
+						_ngModelCtrl.$setValidity('required', true);
+					}
+				}, 0)
+			}
+		};
+	}])
+	// pxGroup
+	.directive('pxGroup', ['pxConfig', '$rootScope', '$mdDialog', function(pxConfig, $rootScope, $mdDialog) {
+		return {
+			restrict: 'E',
+			scope: {
+				id: '@id',
+				required: '=required',
+				control: '=pxControl',
+				placeholder: '@placeholder',
+				inputClass: '@pxInputClass',
+				//complete: '=pxComplete',
+				//table: '@pxTable',
+				//fields: '@pxFields',
+				//orderBy: '@pxOrderBy',
+				//recordCount: '@pxRecordCount',
+				selectedItem: '=pxSelectedItem',
+				//url: '@pxUrl',
+				//responseQuery: '@pxResponseQuery',
+				//localQuery: '@pxLocalQuery',
+				//searchFields: '@searchfields',
+				//dialog: '=pxDialog',
+				searchClick: '&pxSearchClick',
+				templateUrl: '@pxTemplateUrl',
+				for: '@for',
+				change: '&pxChange'
+			},
+			templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-group.html',
+			link: function(scope, element, attrs, ngModelCtrl) {
+				if ($rootScope.globals.currentUser.per_developer !== 1) {
+					element.hide();
+					if (element.parent().children().length === 1) {
+						element.parent().hide();
+					}
+				}
+
+				// Tabela (SQL)
+				//scope.table = pxConfig.GROUP_TABLE;
+
+				// Configuração do input-search
+				if (pxConfig.GROUP_ITEM === '' && pxConfig.GROUP_LABEL === '') {
+					scope.groupSearchConfig = {
+						table: pxConfig.GROUP_TABLE,
+						fields: [{
+							title: '',
+							labelField: true,
+							field: pxConfig.GROUP_TABLE + '_' + pxConfig.GROUP_LABEL_SUFFIX,
+							search: true,
+							type: 'string',
+							filterOperator: '%LIKE%'
+						}, {
+							title: '',
+							field: pxConfig.GROUP_TABLE + '_' + pxConfig.GROUP_ITEM_SUFFIX
+						}]
+					};
+				} else {
+					scope.groupSearchConfig = {
+						fields: [{
+							title: '',
+							labelField: true,
+							field: pxConfig.GROUP_LABEL,
+							search: true,
+							type: 'string',
+							filterOperator: '%LIKE%'
+						}, {
+							title: '',
+							field: pxConfig.GROUP_ITEM
+						}]
+					};
+				}
+
+				// How to call a method defined in an AngularJS directive?
+				// http://stackoverflow.com/questions/16881478/how-to-call-a-method-defined-in-an-angularjs-directive
+				scope.internalControl = scope.control || {};
+
+				scope.internalControl.setValue = function(value) {
+					scope.groupSearchControl.setValue(value);
+				};
+
+				scope.internalControl.setDefault = function(value) {
+					scope.groupSearchControl.setDefault(value);
+				};
+
+				scope.groupSearchControl = {};
+
+				scope.groupSearchClick = function() {
+					if (scope.templateUrl && scope.templateUrl !== '') {
+						$mdDialog.show({
+							scope: scope,
+							preserveScope: true,
+							controller: groupSearchCtrl,
+							templateUrl: scope.templateUrl,
+							parent: angular.element(document.body),
+							targetEvent: event,
+							clickOutsideToClose: true
+						});
+					} else {
+						scope.searchClick({
+							event: event
+						});
+					}
+				}
+
+				scope.groupSearchChange = function(event) {
+					scope.internalControl.selectedItem = scope.groupSearchControl.selectedItem;
+					scope.change({
+						event: event
+					});
+				}
+
+				groupSearchCtrl.$inject = ['$scope', '$mdDialog'];
+
+				function groupSearchCtrl($scope, $mdDialog) {
+					$scope.callback = function(event) {
+						$scope.setValue(event.itemClick);
+						$mdDialog.hide();
+						$scope.searchClick({
+							event: event
+						});
+					};
+
+					$scope.setValue = function(value) {
+						$scope.groupSearchControl.setValue(value);
+						//$scope.groupSearchChange(value);
+					};
+
+					$scope.setDefault = function(value) {
+						$scope.groupSearchControl.setDefault(value);
+					};
+				}
+			}
+		};
+	}])
+	// pxInputSearch
+	.directive('pxInputSearch', ['pxConfig', 'pxUtil', 'pxArrayUtil', '$parse', '$http', '$sce', '$timeout', '$mdDialog', '$compile', function(pxConfig, pxUtil, pxArrayUtil, $parse, $http, $sce, $timeout, $mdDialog, $compile) {
+		return {
+			restrict: 'E',
+			scope: {
+				debug: '=pxDebug',
+				id: '@id',
+				config: '@pxConfig',
+				required: '=required',
+				control: '=pxControl',
+				placeholder: '@placeholder',
+				inputClass: '@pxInputClass',
+				complete: '=pxComplete',
+				table: '@pxTable',
+				fields: '@pxFields',
+				orderBy: '@pxOrderBy',
+				recordCount: '@pxRecordCount',
+				where: '@pxWhere',
+				selectedItem: '@pxSelectedItem',
+				url: '@pxUrl',
+				responseQuery: '@pxResponseQuery',
+				localQuery: '@pxLocalQuery',
+				searchFields: '@searchfields',
+				dialog: '=pxDialog',
+				searchClick: '&pxSearchClick',
+				change: '&pxChange',
+				dependencies: '@pxDependencies'
+			},
+			require: '?ngModel',
+			templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-input-search.html',
+			link: function(scope, element, attrs, ngModelCtrl) {
+
+				if (!ngModelCtrl) {
+					return;
+				}
+
+				scope.inputClass = scope.inputClass || 'form-control';
+
+				if (scope.dialog) {
+					scope.inputGroup = 'input-group';
+				} else {
+					scope.inputGroup = '';
+				}
+
+				scope.lastSearchTerm = null;
+				scope.currentIndex = null;
+				scope.justChanged = false;
+				scope.searchTimer = null;
+				scope.hideTimer = null;
+				scope.searching = false;
+				scope.pause = 400;
+				scope.minLength = 3;
+				scope.searchStr = null;
+
+				scope.internalControl = scope.control || {};
+
+				scope.internalControl.working = false;
+				scope.internalControl.selectedItem = null;
+
+				scope.internalControl.setValue = function(value) {
+					scope.setValue(value);
+				};
+
+				scope.internalControl.setDefault = function(value) {
+					scope.setDefault(value);
+				};
+
+				scope.internalControl.getValue = function() {
+					return {
+						selectedItem: scope.selectedItem
+					};
+				};
+
+				$timeout(function() {
+					var _element = angular.element($('#' + scope.id + '_inputSearch').get(0));
+					// Evento blur
+					_element.on('blur', function(event) {
+						scope.setValidity();
+					});
+					try {
+						var objConfig = JSON.parse(scope.config);
+						scope.table = scope.table || objConfig.table;
+						scope.fields = scope.fields || objConfig.fields;
+						scope.orderBy = scope.orderBy || objConfig.orderBy;
+						scope.recordCount = scope.recordCount || objConfig.recordCount;
+						scope.where = scope.where || objConfig.where;
+						scope.dependencies = []; //scope.dependencies = scope.dependencies || objConfig.dependencies;                            
+						if (Array.isArray(scope.where)) {
+							for (var i = 0; i < scope.where.length; i++) {
+								if (scope.where[i].required === true) {
+									scope.dependencies.push(scope.where[i]);
+								}
+							}
+						}
+					} catch (error) {
+						console.error('px-form-item: configuração do campo ' + scope.id + ' inválida');
+					}
+
+					if (scope.dependencies) {
+						for (var i = 0; i < scope.dependencies.length; i++) {
+							var result = pxUtil.getFieldValueObject(scope.dependencies[i]);
+							result.element.on('blur', function(event) {
+								var result = pxUtil.getFieldValueObject({
+									filter: $(this).attr('id')
+								});
+								var element = angular.element($('#' + $(this).attr('id')).get(0));
+								if (result.value === null || result.value === '' || result.value !== element.scope().oldValue) {
+									scope.clear();
+								}
+								element.scope().oldValue = angular.copy(result.value); //angular.copy(element.scope().selectedItem);                                    
+							});
+						};
+					}
+				}, 0);
+
+				scope.setValidity = function() {
+					var _element = angular.element($('#' + scope.id + '_inputSearch').get(0));
+					var _span = angular.element($('#' + scope.id + '_spanInputSearch').get(0));
+					if (!angular.isDefined(scope.selectedItem) || scope.selectedItem === null) {
+						ngModelCtrl.$setValidity('requiredsearch', false);
+						scope.clear();
+					} else {
+						var searchStrQuery = '';
+						if (angular.isDefined(scope.selectedItem)) {
+							scope.labelField = scope.fields[pxArrayUtil.getIndexByProperty(scope.fields, 'labelField', true)].field;
+							searchStrQuery = scope.selectedItem[scope.labelField];
+							if (!angular.isDefined(searchStrQuery)) {
+								searchStrQuery = scope.selectedItem[scope.labelField.toUpperCase()];
+							}
+						}
+						if (scope.searchStr !== searchStrQuery) {
+							scope.clear();
+							ngModelCtrl.$setValidity('requiredsearch', false);
+						} else {
+							ngModelCtrl.$setValidity('requiredsearch', true);
+							ngModelCtrl.$setValidity('required', true);
+						}
+					}
+					$timeout(function() {
+						_element.trigger('keyup');
+					}, 0);
+					if (attrs.required === true) {
+						if (ngModelCtrl.$invalid) {
+							_element.css({
+								borderColor: '#A94442'
+							});
+							_span.css({
+								borderColor: '#A94442'
+							});
+						} else {
+							_element.css({
+								borderColor: '#CCCCCC'
+							});
+							_span.css({
+								borderColor: '#CCCCCC'
+							});
+						}
+					}
+				}
+
+				var isNewSearchNeeded = function(newTerm, oldTerm) {
+					return newTerm.length >= scope.minLength && newTerm !== oldTerm;
+				};
+				// px-complete - Start
+				if (scope.complete !== true) {
+					return;
+				}
+				scope.processResults = function(response, str, arrayFields) {
+					if (response && response.length > 0) {
+
+						scope.results = [];
+
+						for (var i = 0; i < response.length; i++) {
+
+							var textValue = '';
+							var description = '';
+
+							for (var j = 0; j < arrayFields.length; j++) {
+
+								var tempValue = '';
+
+								if (arrayFields[j].labelField) {
+
+									tempValue = response[i][arrayFields[j].field];
+
+									if (!angular.isDefined(tempValue)) {
+										tempValue = response[i][arrayFields[j].field.toUpperCase()];
+									}
+
+									textValue += arrayFields[j].title + tempValue + '';
+								}
+
+								if (arrayFields[j].descriptionField) {
+
+									tempValue = response[i][arrayFields[j].field];
+
+									if (!angular.isDefined(tempValue)) {
+										tempValue = response[i][arrayFields[j].field.toUpperCase()];
+									}
+
+									description += arrayFields[j].title + tempValue + ' ';
+								}
+							}
+
+							var resultRow = {
+								title: textValue,
+								description: description,
+								item: response[i]
+							};
+							scope.results[scope.results.length] = resultRow;
+						}
+					} else {
+						scope.results = [];
+					}
+				};
+
+				scope.searchTimerComplete = function(str) {
+					// Início da pesquisa
+
+					var arrayFields = scope.fields;
+
+					if (str.length >= scope.minLength) {
+						if (scope.localQuery) {
+
+							console.warn('px-complete:', 'função localQuery não implementada!');
+
+							scope.searching = false;
+							scope.processResults(JSON.parse(scope.localQuery), str);
+
+						} else {
+
+							// Loop na configuração de campos
+							angular.forEach(arrayFields, function(index) {
+								if (index.search) {
+									// Valor do filtro
+									index.filterObject = {};
+
+									index.filterObject = {
+										field: index.field,
+										value: pxUtil.filterOperator(str, index.filterOperator)
+									};
+								}
+							});
+
+							var params = {};
+							params.dsn = pxConfig.PROJECT_DSN;
+							params.table = scope.table;
+							params.table = scope.table;
+							params.fields = angular.toJson(arrayFields);
+							params.orderBy = scope.orderBy;
+							// Definir filterObject para os campos do scope.where
+							scope.where = pxUtil.setFilterObject(scope.where, false, scope.table)
+							params.where = angular.toJson(scope.where);
+
+							if (!angular.isDefined(scope.recordCount) || scope.recordCount === '') {
+								scope.recordCount = 4;
+							}
+
+							params.rows = scope.recordCount;
+
+							if (!angular.isDefined(scope.url) || scope.url === '') {
+								scope.url = pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-form-item.cfc?method=getData';
+							}
+
+							$http({
+								method: 'POST',
+								url: scope.url,
+								dataType: 'json',
+								params: params
+							}).success(function(response, status, headers, config) {
+								if (scope.debug) {
+									console.info('px-input-search getData success', response);
+								}
+								if (!angular.isDefined(scope.responseQuery) || scope.responseQuery === '') {
+									scope.responseQuery = 'qQuery';
+								}
+
+								scope.searching = false;
+								scope.processResults(((scope.responseQuery) ? response[scope.responseQuery] : response), str, arrayFields);
+
+							}).
+							error(function(data, status, headers, config) {
+								// Erro
+								alert('Ops! Ocorreu um erro inesperado.\nPor favor contate o administrador do sistema!');
+							});
+						}
+					}
+				};
+
+				scope.hideResults = function() {
+					scope.hideTimer = $timeout(function() {
+						scope.showDropdown = false;
+					}, scope.pause);
+				};
+
+				scope.resetHideResults = function() {
+					if (scope.hideTimer) {
+						$timeout.cancel(scope.hideTimer);
+					}
+				};
+
+				scope.hoverRow = function(index) {
+					scope.currentIndex = index;
+				};
+
+				scope.keyPressed = function(event) {
+					if (!(event.which === 38 || event.which === 40 || event.which === 13)) {
+						if (!scope.searchStr || scope.searchStr === '') {
+							scope.showDropdown = false;
+							scope.lastSearchTerm = null;
+						} else if (isNewSearchNeeded(scope.searchStr, scope.lastSearchTerm)) {
+
+
+
+							scope.lastSearchTerm = scope.searchStr;
+							scope.showDropdown = true;
+							scope.currentIndex = -1;
+							scope.results = [];
+
+							if (scope.searchTimer) {
+								$timeout.cancel(scope.searchTimer);
+							}
+
+							scope.searching = true;
+
+							scope.searchTimer = $timeout(function() {
+								scope.searchTimerComplete(scope.searchStr);
+							}, scope.pause);
+						} else {
+							scope.hasDependencies();
+						}
+					} else {
+						event.preventDefault();
+					}
+				};
+
+				scope.selectResult = function(result) {
+					scope.searchStr = scope.lastSearchTerm = result.title;
+					scope.internalControl.selectedItem = scope.selectedItem = result.item;
+					scope.showDropdown = false;
+					scope.results = [];
+					//scope.$apply();
+					scope.setValidity();
+					scope.change({
+						event: event
+					});
+				};
+
+				var inputField = element.find('input');
+
+				inputField.on('keyup', scope.keyPressed);
+
+				element.on('keyup', function(event) {
+					if (event.which === 40) {
+						if (scope.results && (scope.currentIndex + 1) < scope.results.length) {
+							scope.currentIndex++;
+							scope.$apply();
+							event.preventDefault();
+							event.stopPropagation();
+						}
+
+						scope.$apply();
+					} else if (event.which === 38) {
+						if (scope.currentIndex >= 1) {
+							scope.currentIndex--;
+							scope.$apply();
+							event.preventDefault();
+							event.stopPropagation();
+						}
+
+					} else if (event.which === 13) {
+						if (scope.results && scope.currentIndex >= 0 && scope.currentIndex < scope.results.length) {
+							scope.selectResult(scope.results[scope.currentIndex]);
+							scope.$apply();
+							event.preventDefault();
+							event.stopPropagation();
+						} else {
+							scope.results = [];
+							scope.$apply();
+							event.preventDefault();
+							event.stopPropagation();
+						}
+
+					} else if (event.which === 27) {
+						scope.results = [];
+						scope.showDropdown = false;
+						scope.$apply();
+					} else if (event.which === 8) {
+						scope.selectedItem = null;
+						scope.$apply();
+					}
+				});
+				// px-complete - End
+
+				scope.showDialog = function(event) {
+					if (!scope.hasDependencies()) {
+						scope.clear();
+						scope.searchClick({
+							event: event
+						});
+					}
+				};
+
+				scope.hasDependencies = function() {
+					if (scope.dependencies) {
+						for (var i = 0; i < scope.dependencies.length; i++) {
+							var result = pxUtil.getFieldValueObject(scope.dependencies[i]);
+							if (result.value === null || result.value === '') {
+								result.element.trigger('blur');
+								alert(scope.dependencies[i].message);
+								//console.info(scope.dependencies[i].message);
+								ngModelCtrl.$setValidity('deps', false);
+								scope.setValidity();
+								return true;
+							}
+						};
+					}
+					ngModelCtrl.$setValidity('deps', true);
+					return false;
+				};
+
+				$timeout(function() {
+					if (angular.isDefined(scope.default) && !angular.isDefined(scope.selectedItem))
+						scope.setValue(scope.default);
+				}, 0)
+
+			},
+			controller: ['$scope', '$timeout', function($scope, $timeout) {
+
+				$scope.setDefault = function(data) {
+					$scope.default = data;
+				}
+
+				$scope.setValue = function(data) {
+					var arrayFields = $scope.fields;
+					var field = arrayFields[pxArrayUtil.getIndexByProperty(arrayFields, 'labelField', true)].field;
+					var tempValue = data[field];
+					if (!angular.isDefined(tempValue)) {
+						tempValue = data[field.toUpperCase()];
+					}
+					$scope.searchStr = $scope.lastSearchTerm = tempValue;
+					$scope.internalControl.selectedItem = $scope.selectedItem = data;
+					$scope.showDropdown = false;
+					$scope.results = [];
+					$scope.setValidity();
+
+					/*
+					scope.searchStr = scope.lastSearchTerm = result.title;
+					scope.selectedItem = result.item;
+					scope.showDropdown = false;
+					scope.results = [];
+					*/
+
+					$scope.change({
+						event: data
+					});
+				};
+
+				$scope.clear = function() {
+					$scope.searchStr = $scope.lastSearchTerm = '';
+					$scope.selectedItem = null;
+					$scope.showDropdown = false;
+					$scope.results = [];
+					$scope.internalControl.selectedItem = null;
+				};
+			}]
+		};
+	}]);
