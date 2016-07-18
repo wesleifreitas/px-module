@@ -42,7 +42,7 @@ gulp.task('build-px-form-item-js', function() {
 		.pipe(gulp.dest('dist/px-form-item'));
 });
 
-gulp.task('source-form-item-js', function() {
+gulp.task('source-px-form-item-js', function() {
 	return gulp
 		.src(['./src/system/components/px-form-item/*.js'])
 		.pipe(concat('px-form-item.js'))
