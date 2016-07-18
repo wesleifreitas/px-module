@@ -6,12 +6,19 @@ pxDateUtil.$inject = [];
 function pxDateUtil() {
 
     var service = {};
-    var moment = require('moment')
+    // Verificar se moment não está definido e se require está definido
+    if (typeof moment === 'undefined' && typeof require !== 'undefined') {
+        service.moment = require('moment')
+    } else if (typeof moment === 'function') {
+        service.moment = moment;
+    } else {
+        service.moment = function() {
+            console.error('pxDateUtil:', 'moment.js não importada');
+        }
+    }
 
     service.dateAdd = dateAdd;
     service.months = months;
-    // Definir service moment.js
-    service.moment = moment;
 
     return service;
 
