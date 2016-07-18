@@ -11,8 +11,9 @@
     <script src="../lib/angular-ui-mask/dist/mask.min.js"></script>
     <script src="../lib/numeral/min/numeral.min.js"></script>
     <script src="../lib/numeral/min/languages.min.js"></script>
+    <script src="../lib/jquery/dist/jquery.min.js"></script>
     <!-- form-item -->
-    <script src="../../dist/px-form-item/px-form-item.min.js"></script>
+    <script src="../../dist/px-form-item/px-form-item.js"></script>
     <!-- app -->
     <script src="app.js"></script>
 </head>
@@ -30,7 +31,7 @@
                 <p>Chamar função ao teclar enter.</p>
                 <form name="demo" class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-9">
+                        <div class="col-sm-10">
                             <pre class="prettyprint">&lt;input type=&quot;text&quot; px-enter=&quot;myFunction()&quot;/&gt;</pre>
                             <input type="text" class="form-control" id="enter" name="enter" px-enter="enter($event)" />
                             <span class="help-inline">
@@ -45,7 +46,7 @@
                 <p>Definir máscaras para campos (com base em <a href="https://htmlpreview.github.io/?https://github.com/angular-ui/ui-mask/master/demo/index.html" target="_blank">ui-mask</a>).</p>
                 <form name="demo" class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-9">
+                        <div class="col-sm-10">
                             <pre class="prettyprint">&lt;input type=&quot;text&quot; ng-model=&quot;cpf&quot; px-cpf-mask/&gt;</pre>
                             <input type="text" class="form-control" id="cpf" name="cpf" ng-model="cpf" px-cpf-mask/>
                             <span class="help-inline">
@@ -62,7 +63,7 @@
                 <p>Definir máscaras para números.</p>
                 <form name="demo" class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-9">
+                        <div class="col-sm-10">
                             <pre class="prettyprint">&lt;input type=&quot;text&quot; ng-model=&quot;cpf&quot; px-number-mask/&gt;</pre>
                             <input type="text" class="form-control" id="number" name="number" ng-model="number" px-number-mask />
                             <span class="help-inline">
@@ -72,7 +73,20 @@
                     </div>
                 </form>
             </div>
-            
+            <div class="col-md-6">
+                <h3>px-show-error</h3>
+                <p>Apresentar erros.</p>
+                <form name="demo" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <pre class="prettyprint">&lt;input type=&quot;email&quot; id=&quot;showError&quot; ng-model=&quot;showError&quot;/&gt;</pre>
+                            <input type="email" class="form-control" id="showError" name="showError" ng-model="showError"/>
+                            <px-show-error px-element="showError"></px-show-error>
+                            <pre class="prettyprint">&lt;px-show-error px-element=&quot;showError&quot; /&gt;</pre>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 </body>
