@@ -1,4 +1,4 @@
-var module = angular.module('px-data-grid', ['px-data-grid.service','px-array-util','px-mask-util','px-string-util','px-util']);
+var module = angular.module('px-data-grid', ['px-data-grid.service', 'px-array-util', 'px-date-util', 'px-mask-util', 'px-string-util', 'px-util']);
 
 module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout', '$sce', '$rootScope', function(pxConfig, pxArrayUtil, pxUtil, $timeout, $sce, $rootScope) {
     return {
@@ -449,7 +449,6 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
             // Internal Control - End
 
-
             // Chama evento px-init
             $timeout(scope.init, 0);
         },
@@ -457,15 +456,11 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
     };
 }]);
 
-pxDataGridCtrl.$inject = ['pxConfig', 'pxUtil', 'pxArrayUtil', 'pxMaskUtil', 'pxStringUtil', 'pxDataGridService', '$scope', '$http', '$timeout'];
+pxDataGridCtrl.$inject = ['pxConfig', 'pxUtil', 'pxArrayUtil', 'pxDateUtil', 'pxMaskUtil', 'pxStringUtil', 'pxDataGridService', '$scope', '$http', '$timeout'];
 
-function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxMaskUtil, pxStringUtil, pxDataGridService, $scope, $http, $timeout) {
+function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, pxStringUtil, pxDataGridService, $scope, $http, $timeout) {
 
-    // Verificar se moment não está definido e se require está definido
-    if (typeof moment === 'undefined' && typeof require !== 'undefined') {
-        // Definir moment.js com a faunção require (requirejs)
-        var moment = require('moment');
-    }
+    var moment = pxDateUtil.moment;
 
     // A página atual inicia-se em 0
     $scope.currentPage = 0;
@@ -505,7 +500,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxMaskUtil, pxStringUtil,
 
             if ($scope.ajaxUrl) {
                 $scope.internalControl.table.context[0].oLanguage.sInfo = info.recordsTotal + ' registros carregados.';
-            } else {                
+            } else {
                 if (info.page === info.pages - 1) {
                     $scope.currentPage = info.page;
                     if ($scope.demand) {
@@ -997,7 +992,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxMaskUtil, pxStringUtil,
     $scope.addDataRow = function addDataRow(value) {
         // Somar currentRecordCount
         $scope.currentRecordCount++;
-        
+
         // Dados
         var data = {};
         data.pkValue = {};
@@ -1115,7 +1110,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxMaskUtil, pxStringUtil,
                 }
             }
         });
-    
+
         // Atualizar dados do dataTable                                        
         //requirejs(["dataTables"], function() {
         $('#' + $scope.id + '_pxDataTable').DataTable().row.add(data).draw();
