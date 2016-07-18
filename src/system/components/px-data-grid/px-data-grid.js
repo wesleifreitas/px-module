@@ -1,4 +1,4 @@
-var module = angular.module('px-data-grid', ['px-data-grid.service']);
+var module = angular.module('px-data-grid', ['px-data-grid.service','px-array-util','px-mask-util','px-string-util','px-util']);
 
 module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout', '$sce', '$rootScope', function(pxConfig, pxArrayUtil, pxUtil, $timeout, $sce, $rootScope) {
     return {
