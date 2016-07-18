@@ -1629,7 +1629,7 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
 */
 @font-face {
 	font-family: 'metroSysIcons';
-	src: url('../fonts/metroSysIcons.woff') format('woff'), url('../fonts/metroSysIcons.ttf') format('truetype'), url('../fonts/metroSysIcons.svg#metroSysIcons') format('svg');
+	src: url('fonts/metroSysIcons.woff') format('woff'), url('fonts/metroSysIcons.ttf') format('truetype'), url('fonts/metroSysIcons.svg#metroSysIcons') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
