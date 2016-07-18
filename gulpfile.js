@@ -72,6 +72,15 @@ gulp.task('build-px-data-grid-css', function() {
 		.pipe(gulp.dest('dist/px-data-grid'));
 });
 
+gulp.task('build-px-data-grid-fonts', function() {
+	return gulp
+		.src([
+			'./src/system/components/px-data-grid/fonts/*.woff',
+			'./src/system/components/px-data-grid/fonts/*.ttf'
+		])
+		.pipe(gulp.dest('dist/px-data-grid/fonts'));
+});
+
 gulp.task('source-px-data-grid', function() {
 	return gulp
 		.src(['./src/system/components/px-data-grid/*.js',
@@ -85,7 +94,8 @@ gulp.task('default', [
 	'build-px-util-js',
 	'build-px-form-item-js',
 	'build-px-data-grid-js',
-	'build-px-data-grid-css'
+	'build-px-data-grid-css',
+	'build-px-data-grid-fonts'
 ]);
 
 gulp.task('release', [
