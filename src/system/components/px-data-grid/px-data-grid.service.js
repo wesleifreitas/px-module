@@ -16,8 +16,10 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
 
-        if ($rootScope.hasOwnProperty('globals.currentUser.userId')) {
-            data.user = $rootScope.globals.currentUser.userId;
+        try {
+            data.user = $rootScope.globals.currentUser.usu_id;
+        } catch (error) {
+            data.user = -1;
         }
 
         if (!angular.isDefined(data.orderBy)) {
