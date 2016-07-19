@@ -3110,9 +3110,9 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
 
-        if ($rootScope.hasOwnProperty('globals.currentUser.usu_id')) {
+        try {
             data.user = $rootScope.globals.currentUser.usu_id;
-        } else {
+        } catch (error) {
             data.user = -1;
         }
 
