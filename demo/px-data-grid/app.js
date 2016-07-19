@@ -52,6 +52,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
 
         $scope.countRow = 1;
         $scope.addDataRow = function() {
+            $scope.dgExemploControl.getData();
             $scope.dgExemploControl.addDataRow({
                 "id": $scope.countRow++,
                 "nome": "Weslei Freitas",
