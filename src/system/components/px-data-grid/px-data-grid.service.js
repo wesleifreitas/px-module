@@ -16,6 +16,10 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
 
+        if (data.url === '') {
+            data.url = '../../../rest/px-project/system/px-data-grid/getData';
+        }
+
         try {
             data.user = $rootScope.globals.currentUser.usu_id;
         } catch (error) {
@@ -40,8 +44,7 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
 
         $http({
             method: 'POST',
-            url: 'data.json',
-            //url: '../../../rest/px-project/system/px-data-grid/getData',
+            url: data.url,
             data: data
         }).then(function successCallback(response) {
             callback(response);

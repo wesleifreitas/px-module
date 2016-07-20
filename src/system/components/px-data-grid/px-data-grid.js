@@ -92,6 +92,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     return;
                 }
 
+                scope.url = newValue.url || '';
                 scope.fields = newValue.fields;
 
                 scope.dataTable = '';
@@ -869,6 +870,8 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
         // Dados da consulta
         var data = {}
+
+        data.url = $scope.url
 
         data.schema = $scope.schema;
         if (angular.isDefined($scope.view) && $scope.view !== '') {
