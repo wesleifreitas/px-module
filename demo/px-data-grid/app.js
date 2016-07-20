@@ -30,6 +30,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      * @type {Object}
      */
     $scope.dgExemploConfig = {
+      url: 'data.json',
       fields: [{
         title: 'Nº',
         field: 'id',
