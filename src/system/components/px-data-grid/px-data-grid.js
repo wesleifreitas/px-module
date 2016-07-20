@@ -502,9 +502,13 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             if ($scope.ajaxUrl) {
                 $scope.internalControl.table.context[0].oLanguage.sInfo = info.recordsTotal + ' registros carregados.';
             } else {
+                if (angular.isNumber($scope.nextRowFrom)) {
+                    return;
+                }
+
                 if (info.page === info.pages - 1) {
                     $scope.currentPage = info.page;
-                    if ($scope.demand) {
+                    if ($scope.demand) {                        
                         $scope.getData($scope.nextRowFrom, $scope.nextRowTo);
                     }
                 }
@@ -943,7 +947,15 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                     }
 
                     //$('#'+$scope.id+'_pxDataTable_info').html('Monstrando de ' + info.start + ' a ' + info.end + ' no total de ' + info.recordsTotal + ' registros carregados.' + '<br>Total de registros na base de dados: ' + $scope.recordCount);                           
-                    $('#' + $scope.id + '_pxDataTable_info').html(info.recordsTotal + ' registros carregados.' + ' Total de registros na base de dados: ' + $scope.recordCount);
+                    
+                    var infoMessage = info.recordsTotal + ' registros carregados.'
+                    
+                    if(angular.isNumber($scope.nextRowFrom)){
+                        infoMessage += ' Total de registros na base de dados: ' + $scope.recordCount;
+                    }
+
+                    $('#' + $scope.id + '_pxDataTable_info').html(infoMessage);
+
                     //});
                     // Verifica $scope.demand
                     // false: não continua a consulta até que o usuário navegue até a última página
