@@ -2028,6 +2028,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     return;
                 }
 
+                scope.url = newValue.url || '';
                 scope.fields = newValue.fields;
 
                 scope.dataTable = '';
@@ -2806,6 +2807,8 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         // Dados da consulta
         var data = {}
 
+        data.url = $scope.url
+
         data.schema = $scope.schema;
         if (angular.isDefined($scope.view) && $scope.view !== '') {
             data.table = $scope.view;
@@ -3141,6 +3144,10 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
 
+        if (data.url === '') {
+            data.url = '../../../rest/px-project/system/px-data-grid/getData';
+        }
+
         try {
             data.user = $rootScope.globals.currentUser.usu_id;
         } catch (error) {
@@ -3162,11 +3169,10 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
         if (!angular.isDefined(data.where)) {
             data.where = '';
         }
-
+     
         $http({
-            method: 'POST',
-            url: 'data.json',
-            //url: '../../../rest/px-project/system/px-data-grid/getData',
+            method: 'POST',            
+            url: data.url,
             data: data
         }).then(function successCallback(response) {
             callback(response);
