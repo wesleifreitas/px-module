@@ -16,8 +16,8 @@
     <script src="../lib/numeral/min/languages.min.js"></script>
     <script src="../lib/jquery/dist/jquery.min.js"></script>
     <script src="../lib/datatables/media/js/jquery.dataTables.min.js"></script>
-    <!-- px-config -->
-    <script src="px-config.js"></script>
+    <!-- px-config -->    
+    <script src="../../dist/px-config/px-config.js"></script>
     <!-- px-util -->
     <script src="../../dist/px-util/px-util.js"></script>
     <!-- px-data-grid -->
@@ -35,6 +35,7 @@
         </div>
         <div class="row pull-right">
             <div class="col-md-12">
+                <button class="btn btn-default" ng-click="getData()">Listar</button>
                 <button class="btn btn-default" ng-click="addDataRow()">Adicionar</button>
                 <button class="btn btn-default" ng-click="removeRow()">Remover</button>
             </div>

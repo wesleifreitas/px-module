@@ -1,3 +1,33 @@
+(function() {
+	'use strict';
+
+	// Package Phoenix Project
+	var PX_PACKAGE = '';
+	// Caminho de componentes ColdFusion (Phoenix Project)
+	// Ex.: 'my-project.src'
+	var PX_CFC_PATH = 'px-project.src' + PX_PACKAGE.replace(/\/|\\/g, ".");
+
+	angular.module('pxConfig', [])
+		.constant('pxConfig', {
+			PX_PACKAGE: PX_PACKAGE, // Package Phoenix Project
+			PX_CFC_PATH: PX_CFC_PATH,
+			LIB: 'lib/', // Componentes externos
+			PROJECT_ID: 0, // Identificação do projeto (table: px.project)
+			PROJECT_NAME: 'Phoenix Project', // Nome do projeto
+			PROJECT_SRC: 'px-project/src/', // Source do projeto
+			PROJECT_CSS: [PX_PACKAGE + 'system/login/login.css', 'styles.css'], // Arquivos .css
+			PROJECT_DSN: 'px_project_sql', // Data Source Name (CF)
+			LOCALE: 'pt-BR', // Locale
+			LOGIN_REQUIRED: true, // Login obrigatório?
+			GROUP: false, // Agrupar dados?
+			GROUP_TABLE: 'grupo', // Tabela Group
+			GROUP_ITEM_SUFFIX: '', // Sufixo do campo GROUP_ITEM
+			GROUP_LABEL_SUFFIX: '', // Sufixo do campo GROUP_LABEL
+			GROUP_REPLACE: [], // Substituir no nome do campo GROUP
+			GROUP_ITEM: 'grupo_id', // Idetificador de GROUP (Utilizar quando GROUP_ITEM_SUFFIX === '')
+			GROUP_LABEL: 'grupo_nome' // Label do GROUP (Utilizar quando GROUP_LABEL_SUFFIX === '')
+		});
+}());
 angular.module('px-array-util', [])
     .factory('pxArrayUtil', pxArrayUtil);
 
@@ -1904,14 +1934,14 @@ angular.module('px-data-grid.filter', [])
 			}
 		}
 	}]);
-var module = angular.module('px-data-grid', ['px-data-grid.service','px-data-grid.filter', 'px-array-util', 'px-date-util', 'px-mask-util', 'px-string-util', 'px-util']);
+var module = angular.module('px-data-grid', ['px-data-grid.service', 'px-data-grid.filter', 'px-array-util', 'px-date-util', 'px-mask-util', 'px-string-util', 'px-util']);
 
 module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout', '$sce', '$rootScope', function(pxConfig, pxArrayUtil, pxUtil, $timeout, $sce, $rootScope) {
     return {
         restrict: 'E',
         replace: true,
         transclude: false,
-        templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-data-grid/px-data-grid.html',
+        template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="table table-striped hovered dataTable" width="100%"></table></div>',
         scope: {
             debug: '=pxDebug',
             config: '@pxConfig',
@@ -2989,9 +3019,10 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 /*if (!angular.isDefined(item.momentType)) {
                     item.momentType = 'date';
                 }*/
+                var dateFormat = moment(Date.parse(data[item.field])).format(item.moment);
                 // Verificar se o valor é do tipo date
-                if (angular.isDate(data[item.field])) {
-                    data[item.field] = moment(Date.parse(data[item.field])).format(item.moment);
+                if (angular.isDate(data[item.field]) || (dateFormat !== 'Invalid date' && item.type === 'date')) {
+                    data[item.field] = dateFormat;
                 } else if (parseInt(data[item.field]) > 0 && parseInt(data[item.field]) <= 12) {
                     // Mês (m)
                     data[item.field] = moment.months()[parseInt(data[item.field]) - 1];
@@ -3134,7 +3165,8 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
 
         $http({
             method: 'POST',
-            url: '../../../rest/px-project/system/px-data-grid/getData',
+            url: 'data.json',
+            //url: '../../../rest/px-project/system/px-data-grid/getData',
             data: data
         }).then(function successCallback(response) {
             callback(response);
