@@ -40,7 +40,8 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
 
         $http({
             method: 'POST',
-            url: '../../../rest/px-project/system/px-data-grid/getData',
+            url: 'data.json',
+            //url: '../../../rest/px-project/system/px-data-grid/getData',
             data: data
         }).then(function successCallback(response) {
             callback(response);

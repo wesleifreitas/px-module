@@ -1,11 +1,11 @@
-var module = angular.module('px-data-grid', ['px-data-grid.service','px-data-grid.filter', 'px-array-util', 'px-date-util', 'px-mask-util', 'px-string-util', 'px-util']);
+var module = angular.module('px-data-grid', ['px-data-grid.service', 'px-data-grid.filter', 'px-array-util', 'px-date-util', 'px-mask-util', 'px-string-util', 'px-util']);
 
 module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout', '$sce', '$rootScope', function(pxConfig, pxArrayUtil, pxUtil, $timeout, $sce, $rootScope) {
     return {
         restrict: 'E',
         replace: true,
         transclude: false,
-        templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-data-grid/px-data-grid.html',
+        template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="table table-striped hovered dataTable" width="100%"></table></div>',
         scope: {
             debug: '=pxDebug',
             config: '@pxConfig',
@@ -1083,9 +1083,10 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 /*if (!angular.isDefined(item.momentType)) {
                     item.momentType = 'date';
                 }*/
+                var dateFormat = moment(Date.parse(data[item.field])).format(item.moment);
                 // Verificar se o valor é do tipo date
-                if (angular.isDate(data[item.field])) {
-                    data[item.field] = moment(Date.parse(data[item.field])).format(item.moment);
+                if (angular.isDate(data[item.field]) || (dateFormat !== 'Invalid date' && item.type === 'date')) {
+                    data[item.field] = dateFormat;
                 } else if (parseInt(data[item.field]) > 0 && parseInt(data[item.field]) <= 12) {
                     // Mês (m)
                     data[item.field] = moment.months()[parseInt(data[item.field]) - 1];
