@@ -9,6 +9,26 @@ var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var watch = require('gulp-watch');
 
+gulp.task('build-px-config-js', function() {
+	return gulp
+		.src(['./src/system/components/config/*.js'])
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'))
+		.pipe(concat('px-config.js'))
+		.pipe(gulp.dest('dist/px-config'));
+});
+
+gulp.task('release-px-config-js', function() {
+	return gulp
+		.src(['./src/system/components/config/*.js'])
+		.pipe(concat('px-config.js'))
+		.pipe(uglify())
+		.pipe(rename({
+			suffix: '.min'
+		}))
+		.pipe(gulp.dest('dist/px-config'));
+});
+
 gulp.task('build-px-util-js', function() {
 	return gulp
 		.src(['./src/system/components/utils/js/*.js'])
@@ -32,6 +52,8 @@ gulp.task('release-px-util-js', function() {
 gulp.task('build-px-form-item-js', function() {
 	return gulp
 		.src(['./src/system/components/px-form-item/*.js'])
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'))
 		.pipe(concat('px-form-item.js'))
 		.pipe(gulp.dest('dist/px-form-item'));
 });
@@ -39,8 +61,6 @@ gulp.task('build-px-form-item-js', function() {
 gulp.task('release-px-form-item-js', function() {
 	return gulp
 		.src(['./src/system/components/px-form-item/*.js'])
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'))
 		.pipe(concat('px-form-item.js'))
 		.pipe(uglify())
 		.pipe(rename({
@@ -52,6 +72,8 @@ gulp.task('release-px-form-item-js', function() {
 gulp.task('build-px-data-grid-js', function() {
 	return gulp
 		.src(['./src/system/components/px-data-grid/*.js'])
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'))
 		.pipe(concat('px-data-grid.js'))
 		.pipe(gulp.dest('dist/px-data-grid'));
 });
@@ -60,8 +82,6 @@ gulp.task('build-px-data-grid-js', function() {
 gulp.task('release-px-data-grid-js', function() {
 	return gulp
 		.src(['./src/system/components/px-data-grid/*.js'])
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'))
 		.pipe(concat('px-data-grid.js'))
 		.pipe(uglify())
 		.pipe(rename({
@@ -97,7 +117,8 @@ gulp.task('build-px-data-grid-fonts', function() {
 
 gulp.task('build-px-full-js', function() {
 	return gulp
-		.src(['./src/system/components/utils/js/*.js',
+		.src(['./src/system/components/config/*.js',
+			'./src/system/components/utils/js/*.js',
 			'./src/system/components/px-form-item/*.js',
 			'./src/system/components/px-data-grid/*.js'
 		])
@@ -116,12 +137,11 @@ gulp.task('build-px-full-css', function() {
 
 gulp.task('release-px-full-js', function() {
 	return gulp
-		.src(['./src/system/components/utils/js/*.js',
+		.src(['./src/system/components/config/*.js',
+			'./src/system/components/utils/js/*.js',
 			'./src/system/components/px-form-item/*.js',
 			'./src/system/components/px-data-grid/*.js',
 		])
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'))
 		.pipe(concat('px-full.js'))
 		.pipe(uglify())
 		.pipe(rename({
@@ -142,6 +162,7 @@ gulp.task('release-px-full-css', function() {
 });
 
 gulp.task('default', [
+	'build-px-config-js',
 	'build-px-util-js',
 	'build-px-form-item-js',
 	'build-px-data-grid-js',
@@ -153,6 +174,7 @@ gulp.task('default', [
 
 gulp.task('release', [
 	'default',
+	'release-px-config-js',
 	'release-px-util-js',
 	'release-px-form-item-js',
 	'release-px-data-grid-js',
@@ -162,6 +184,7 @@ gulp.task('release', [
 ]);
 
 gulp.task('watch', function() {
+	gulp.watch('./src/system/components/config/*.js', ['build-px-config-js']);
 	gulp.watch('./src/system/components/utils/js/*.js', ['build-px-util-js']);
 	gulp.watch('./src/system/components/px-form-item/*.js', ['build-px-form-item-js']);
 	gulp.watch('./src/system/components/px-data-grid/*.js', ['build-px-data-grid-js']);
