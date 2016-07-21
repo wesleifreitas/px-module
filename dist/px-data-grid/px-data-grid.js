@@ -245,7 +245,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "orderable": false,
                             "className": "dt-body-center",
                             "render": function(data, type, full, meta) {
-                                return "<i class='" + data.item.class + "'>" + data.item.icon + "</i>";
+                                return "<i link='true' linkId=" + full.pxLink.id + " class='" + full.pxLink.class + "'>" + full.pxLink.icon + "</i>";
                             }
                         });
                         columnDefs++;
@@ -514,6 +514,10 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             if ($scope.ajaxUrl) {
                 $scope.internalControl.table.context[0].oLanguage.sInfo = info.recordsTotal + ' registros carregados.';
             } else {
+                if (angular.isNumber($scope.nextRowFrom)) {
+                    return;
+                }
+
                 if (info.page === info.pages - 1) {
                     $scope.currentPage = info.page;
                     if ($scope.demand) {
@@ -588,6 +592,8 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             $scope.itemEdit({
                 event: itemEditEvent
             });
+
+            e.stopPropagation();
         });
 
         // Evento click checkbox
@@ -628,13 +634,38 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             e.stopPropagation();
         });
 
+        // Evento click link
+        $('#' + $scope.id + '_pxDataTable tbody').on('click', 'i[link="true"]', function(e) {
+
+            // Evento Item Click - Start
+            var $row = $(this).closest('tr');
+            // Dados da linha
+            var data = $scope.internalControl.table.row($row).data();
+
+            var itemClickEvent = {
+                itemClick: data,
+            }
+
+            $timeout(function() {
+                $scope.itemClick({
+                    event: itemClickEvent
+                });
+            }, 0);
+
+            e.stopPropagation();
+        });
+
         // Evento click células
         $('#' + $scope.id + '_pxDataTable').on('click', 'tbody td, thead th:first-child', function(e) {
 
             // Evento Item Click - Start
             var $row = $(this).closest('tr');
             // Dados da linha
-            var data = $scope.internalControl.table.row($row).data();
+            var data = angular.copy($scope.internalControl.table.row($row).data());
+            //delete data.pxLink;
+            data.pxLink = {
+                link: false
+            };
 
             var itemClickEvent = {
                 itemClick: data,
@@ -955,7 +986,15 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                     }
 
                     //$('#'+$scope.id+'_pxDataTable_info').html('Monstrando de ' + info.start + ' a ' + info.end + ' no total de ' + info.recordsTotal + ' registros carregados.' + '<br>Total de registros na base de dados: ' + $scope.recordCount);                           
-                    $('#' + $scope.id + '_pxDataTable_info').html(info.recordsTotal + ' registros carregados.' + ' Total de registros na base de dados: ' + $scope.recordCount);
+
+                    var infoMessage = info.recordsTotal + ' registros carregados.'
+
+                    if (angular.isNumber($scope.nextRowFrom)) {
+                        infoMessage += ' Total de registros na base de dados: ' + $scope.recordCount;
+                    }
+
+                    $('#' + $scope.id + '_pxDataTable_info').html(infoMessage);
+
                     //});
                     // Verifica $scope.demand
                     // false: não continua a consulta até que o usuário navegue até a última página
@@ -1021,9 +1060,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             data.pkValue[item.field] = angular.copy(value[item.field]);
 
             if (item.link && (!angular.isDefined(item.field) || item.field === '')) {
-                var linkData = angular.copy(value);
-                linkData.item = angular.copy(item);
-                data['link'] = linkData;
+                data['pxLink'] = item;
                 return;
             }
 
