@@ -6,6 +6,7 @@
     <title>px-module</title>
     <!-- css -->
     <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../../dist/px-data-grid/px-data-grid.min.css">
     <!-- data-grid dependencies -->
     <script src="../lib/angular/angular.min.js"></script>
@@ -42,7 +43,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <px-data-grid id="dgExemplo" px-debug="true" px-control="dgExemploControl" px-init="dgExemploInit()" px-config="{{dgExemploConfig}}" px-data-init="false" px-check="true" px-edit="true" px-item-edit="edit(event)">
+                <px-data-grid id="dgExemplo" px-debug="true" px-control="dgExemploControl" px-init="dgExemploInit()" px-config="{{dgExemploConfig}}" px-data-init="false" px-check="true" px-item-click="itemClick(event)">
                 </px-data-grid>
             </div>
         </div>
