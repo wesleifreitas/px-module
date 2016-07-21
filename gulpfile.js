@@ -1,4 +1,6 @@
 var gulp = require('gulp');
+// https://www.npmjs.com/package/gulp-webserver
+var webserver = require('gulp-webserver');
 var gutil = require('gulp-util');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
@@ -8,6 +10,25 @@ var cssmin = require('gulp-cssmin');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var watch = require('gulp-watch');
+
+gulp.task('serve', ['watch'], function() {
+	gulp.src('')
+		.pipe(webserver({
+			livereload: {
+				enable: true,
+				filter: function(fileName) {
+					if (fileName.match(/LICENSE|\.json$|\.md$|src$|lib$|node_modules/)) { // exclude all source maps from livereload
+						return false;
+					} else {
+						//console.info(fileName);
+						return true;
+					}
+				}
+			},
+			directoryListing: true,
+			open: true
+		}));
+});
 
 gulp.task('build-px-config-js', function() {
 	return gulp
