@@ -80,8 +80,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
         }
 
         $scope.itemClick = function(event) {
-            console.info(event.itemClick);
-            if (event.itemClick.pxLink.link && event.itemClick.pxLink.linkId === 'sampleIcon') {
+            if (event.itemClick.linkId === 'sampleIcon') {
                 alert('Você clicou no ícone')
             }
         }
