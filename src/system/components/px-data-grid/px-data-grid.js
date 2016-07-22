@@ -175,6 +175,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                 var aoColumnsData = {};
                 var columnDefs = 0;
                 scope.columnDefs = [];
+                scope.links = [];
 
                 angular.forEach(scope.fields, function(index) {
 
@@ -226,17 +227,18 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     // Verificar se o campo é link
                     if (index.link) {
+                        scope.links.push(index);
                         scope.columnDefs.push({
-                            "mData": "link",
+                            "mData": index.linkId,
                             "targets": columnDefs,
                             "searchable": false,
                             "orderable": false,
                             "className": "dt-body-center",
                             "render": function(data, type, full, meta) {
-                                return "<i link='true' linkId=" + full.pxLink.id + " class='" + full.pxLink.class + "'>" + full.pxLink.icon + "</i>";
+                                return "<i link='true' linkId=" + data.linkId + " class='" + data.class + "'>" + data.icon + "</i>";
                             }
                         });
-                        columnDefs++;
+                        //columnDefs++;
                     }
 
                     // Verificar se o campo é visível
@@ -623,12 +625,22 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         });
 
         // Evento click link
-        $('#' + $scope.id + '_pxDataTable tbody').on('click', 'i[link="true"]', function(e) {
+        $('#' + $scope.id + '_pxDataTable tbody').on('click', 'td', function(e) {
 
             // Evento Item Click - Start
-            var $row = $(this).closest('tr');
+            var $row = $(this).closest('td');
+
+            var index = $row.index();
+            var columnIndex = $scope.internalControl.table.column.index('fromVisible', index) - 1;
+
             // Dados da linha
-            var data = $scope.internalControl.table.row($row).data();
+            var data = angular.copy($scope.internalControl.table.row($row).data());
+            if ($scope.links.length > columnIndex) {
+                data['link'] = $scope.links[columnIndex];
+                data['linkId'] = $scope.links[columnIndex].linkId;
+            } else {
+                return;
+            }
 
             var itemClickEvent = {
                 itemClick: data,
@@ -1048,7 +1060,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             data.pkValue[item.field] = angular.copy(value[item.field]);
 
             if (item.link && (!angular.isDefined(item.field) || item.field === '')) {
-                data['pxLink'] = item;
+                data[item.linkId] = item;
                 return;
             }
 
