@@ -178,7 +178,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                 scope.links = [];
 
                 angular.forEach(scope.fields, function(index) {
-
+                    var width = '';
                     // Checkbox  - Start
                     if (i === 0 && scope.check === true) {
                         scope.columns += '<th class="text-left" width="1%"><input name="select_all" value="1" type="checkbox"></th>';
@@ -227,6 +227,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     // Verificar se o campo é link
                     if (index.link) {
+                        width = '1%';
                         scope.links.push(index);
                         scope.columnDefs.push({
                             "mData": index.linkId,
@@ -254,7 +255,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     }
                     columnDefs++;
 
-                    scope.columns += '<th class="text-left">' + index.title + '</th>';
+                    scope.columns += '<th width="' + width + '"" class="text-left">' + index.title + '</th>';
 
                     aoColumnsData = {};
                     aoColumnsData.mData = index.field;
