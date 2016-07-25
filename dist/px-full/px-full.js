@@ -2172,7 +2172,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "orderable": false,
                             "className": "dt-body-center",
                             "render": function(data, type, full, meta) {
-                                return "<i link='true' linkId=" + data.linkId + " class='" + data.class + "'>" + data.icon + "</i>";
+                                return "<div class='link'><i link='true' linkId=" + data.linkId + " class='" + data.class + "'>" + data.icon + "</i></div>";
                             }
                         });
                         //columnDefs++;
@@ -2562,7 +2562,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         });
 
         // Evento click link
-        $('#' + $scope.id + '_pxDataTable tbody').on('click', 'td', function(e) {
+        $('#' + $scope.id + '_pxDataTable tbody').on('click', 'td div i', function(e) {
 
             // Evento Item Click - Start
             var $row = $(this).closest('td');
@@ -2572,7 +2572,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
             // Dados da linha
             var data = angular.copy($scope.internalControl.table.row($row).data());
-            if ($scope.links.length > columnIndex) {
+            if (columnIndex <= $scope.links.length) {            
                 data['link'] = $scope.links[columnIndex];
                 data['linkId'] = $scope.links[columnIndex].linkId;
             } else {
