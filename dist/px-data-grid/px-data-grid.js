@@ -644,7 +644,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             var $row = $(this).closest('td');
 
             var index = $row.index();
-            var columnIndex = $scope.internalControl.table.column.index('fromVisible', index) - 1;
+            var columnIndex = $scope.internalControl.table.column.index('fromVisible', index);
 
             // Dados da linha
             var data = angular.copy($scope.internalControl.table.row($row).data());
