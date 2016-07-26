@@ -45,7 +45,8 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
             }, {
                 title: 'Nome',
                 field: 'nome',
-                type: 'varchar'
+                type: 'varchar',
+                align: 'right'
             }, {
                 title: 'CPF',
                 field: 'cpf',
@@ -63,12 +64,14 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
                 title: 'Label Function',
                 field: 'bateria',
                 type: 'numeric',
-                label: 'bateria'
+                label: 'bateria',
+                align: 'center'
             }, {
                 title: 'Status',
                 field: 'status',
                 type: 'numeric',
-                label: 'status'
+                label: 'status',
+                align: 'center'
             }]
         };
 
@@ -78,9 +81,9 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
                 event.item.class = 'fa fa-battery-' + event.data.bateria;
             } else if (event.item.label === 'status') {
                 if (event.data.status === 1) {
-                    event.data.status = '<span class="label label-success">Ativo</span>';
+                    event.data.status = '<span class="label label-success">ATIVO</span>';
                 } else {
-                    event.data.status = '<span class="label label-warning">Pendente</span>';
+                    event.data.status = '<span class="label label-warning">PENDENTE</span>';
                 }
             }
 
