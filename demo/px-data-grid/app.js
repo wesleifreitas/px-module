@@ -33,11 +33,11 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
             url: 'data.json',
             fields: [{
                 link: true,
-                linkId: "sampleIcon",
-                title: "",
-                class: "material-icons",
-                icon: "done",
-                value: ""
+                linkId: 'sampleIcon',
+                title: '',
+                class: 'material-icons',
+                icon: 'done',
+                value: ''
             }, {
                 title: 'Nº',
                 field: 'id',
@@ -56,33 +56,63 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
                 field: 'data',
                 type: 'date',
                 moment: 'dddd - DD/MM/YYYY'
+            }, {
+                link: true,
+                class: 'fa fa-battery-empty',
+                icon: '',
+                title: 'Label Function',
+                field: 'bateria',
+                type: 'numeric',
+                label: 'bateria'
+            }, {
+                title: 'Status',
+                field: 'status',
+                type: 'numeric',
+                label: 'status'
             }]
+        };
+
+
+        $scope.dgExemploLabel = function(event) {
+            if (event.item.label === 'bateria') {
+                event.item.class = 'fa fa-battery-' + event.data.bateria;
+            } else if (event.item.label === 'status') {
+                if (event.data.status === 1) {
+                    event.data.status = '<span class="label label-success">Ativo</span>';
+                } else {
+                    event.data.status = '<span class="label label-warning">Pendente</span>';
+                }
+            }
+
+            return event;
         };
 
         $scope.getData = function() {
             $scope.dgExemploControl.getData();
-        }
+        };
 
         $scope.countRow = 1;
         $scope.addDataRow = function() {
 
             $scope.dgExemploControl.addDataRow({
-                "id": $scope.countRow++,
-                "nome": "Nome " + Math.floor((Math.random() * 100000) + 1),
-                "cpf": Math.floor((Math.random() * 10000000000) + 1000000000),
-                "data": new Date()
+                'id': $scope.countRow++,
+                'nome': 'Nome ' + Math.floor((Math.random() * 100000) + 1),
+                'cpf': Math.floor((Math.random() * 10000000000) + 1000000000),
+                'data': new Date(),
+                'bateria': Math.floor((Math.random() * 4) + 1),
+                'status': Math.floor((Math.random() * 2))
             })
 
-        }
+        };
 
         $scope.removeRow = function() {
             $scope.dgExemploControl.removeRow('.selected');
-        }
+        };
 
         $scope.itemClick = function(event) {
             if (event.itemClick.linkId === 'sampleIcon') {
-                alert('Você clicou no ícone')
+                alert('Você clicou no ícone');
             }
-        }
+        };
     }
 }]);
