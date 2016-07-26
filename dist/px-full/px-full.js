@@ -2193,7 +2193,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         scope.columnDefs.push({
                             "mData": index.linkId,
                             "targets": columnDefs,
-                            "searchable": false,
+                            "searchable": true,
                             "orderable": false,
                             "className": "dt-body-center",
                             "render": function(data, type, full, meta) {
