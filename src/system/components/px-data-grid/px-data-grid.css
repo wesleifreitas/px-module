@@ -199,10 +199,6 @@
 .px-data-grid .px-pointer {
   cursor: pointer;
 }
-.px-data-grid .link {
-  width: 100%;
-  text-align: center;  
-}
 .px-data-grid .link i{
   cursor: pointer;
 }
