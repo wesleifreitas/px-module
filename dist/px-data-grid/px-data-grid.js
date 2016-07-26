@@ -42,7 +42,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             dataInit: '=pxDataInit',
             rowsProcess: '@pxRowsProcess',
             demand: '@pxDemand',
-            control: '=pxControl'
+            control: '=pxControl',
+            labelFunction: '&pxLabelFunction',
         },
         link: function(scope, element, attrs) {
 
@@ -248,10 +249,24 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "orderable": false,
                             "className": "dt-body-center",
                             "render": function(data, type, full, meta) {
-                                return "<div class='link'><i link='true' linkId=" + data.linkId + " class='" + data.class + "'>" + data.icon + "</i></div>";
+                                return "<div class='link'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i></div>";
                             }
                         });
-                        //columnDefs++;
+                    } else if (index.label) {
+                        // labelFunction
+                        scope.columnDefs.push({
+                            "mData": index.linkId,
+                            "targets": columnDefs,
+                            "searchable": false,
+                            "orderable": false,
+                            "className": "dt-body-center",
+                            "render": function(data, type, full, meta) {
+                                if (typeof index.icon === 'undefined') {
+                                    index.icon = '';
+                                }
+                                return data;
+                            }
+                        });
                     }
 
                     // Verificar se o campo é visível
@@ -260,8 +275,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "targets": columnDefs,
                             "visible": false,
                             "render": function(data, type, full, meta) {
-                                return "<i class='fa fa-pencil'>";
-                                //return "<i class='fa fa-pencil'> <b>Editar</b>";
+                                return data;                                
                             }
                         });
                     }
@@ -644,11 +658,17 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             var $row = $(this).closest('td');
 
             var index = $row.index();
-            var columnIndex = $scope.internalControl.table.column.index('fromVisible', index);
+            var columnIndex = $scope.internalControl.table.column.index('fromData', index);
+            if ($scope.edit === true) {
+                columnIndex--;
+            }
+            if ($scope.check === true) {
+                columnIndex--;
+            }
 
             // Dados da linha
             var data = angular.copy($scope.internalControl.table.row($row).data());
-            if (columnIndex <= $scope.links.length) {            
+            if (columnIndex <= $scope.links.length) {
                 data['link'] = $scope.links[columnIndex];
                 data['linkId'] = $scope.links[columnIndex].linkId;
             } else {
@@ -1062,7 +1082,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
         // Dados
         var data = {};
-        data.pkValue = {};
+        data.value = {};
 
         data.pxDataGridRowNumber = $scope.currentRecordCount;
         data.edit = {};
@@ -1070,110 +1090,121 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         // Loop nas colunas da grid
         angular.forEach($scope.fields, function(item) {
 
-            data.pkValue[item.field] = angular.copy(value[item.field]);
-
-            if (item.link && (!angular.isDefined(item.field) || item.field === '')) {
+            if (item.link) {
                 data[item.linkId] = item;
-                return;
             }
 
-            if (!angular.isDefined(value[item.field])) {
-                // Dados por campo
-                data[item.field] = value[item.field.toUpperCase()];
-            } else {
-                // Dados por campo
-                data[item.field] = value[item.field];
-            }
+            if (typeof item.field !== 'undefined') {
 
-            if (!angular.isDefined(data[item.field])) {
-                data[item.field] = '';
-            }
+                data.value[item.field] = angular.copy(value[item.field]);
 
-            data.edit[item.field] = angular.copy(data[item.field]);
-
-            // Se possuir máscara
-            // https://github.com/the-darc/string-mask
-            if (item.stringMask) {
-                var maskData = '';
-                switch (item.stringMask) {
-                    case 'cpf':
-                        maskData = '###.###.###-##';
-                        //item.pad = '00000000000';
-                        break;
-                    case 'cnpj':
-                        maskData = '##.###.###/####-##';
-                        //item.pad = '00000000000000';
-                        break;
-                    case 'cep':
-                        maskData = '#####-###';
-                        //item.pad = '00000000';
-                        break;
-                    case 'brPhone':
-                        if (data[item.field].length === 11) {
-                            maskData = '(##) #####-####';
-                        } else {
-                            maskData = '(##) #####-####';
-                        }
-                        break;
-                    case 'cpfCnpj':
-                        if (item.type === 'varchar' || item.type === 'char' || item.type === 'string') {
-                            if (String(data[item.field]).length === 11) {
-                                maskData = '###.###.###-##';
-                            } else {
-                                maskData = '##.###.###/####-##';
-                            }
-                        } else {
-                            data[item.field] = String(Number(data[item.field]));
-                            if (data[item.field].length > 11) {
-                                maskData = '##.###.###/####-##';
-                            } else {
-                                maskData = '###.###.###-##';
-                            }
-                        }
-                        break;
-                    default:
-                        maskData = angular.copy(item.stringMask);
-                        break;
-                }
-                if (angular.isDefined(item.pad)) {
-                    data[item.field] = pxMaskUtil.maskFormat(pxStringUtil.pad(item.pad, data[item.field], true), maskData).result;
+                if (!angular.isDefined(value[item.field])) {
+                    // Dados por campo
+                    data[item.field] = value[item.field.toUpperCase()];
                 } else {
-                    data[item.field] = pxMaskUtil.maskFormat(String(data[item.field]), maskData).result;
+                    // Dados por campo
+                    data[item.field] = value[item.field];
                 }
-            }
 
-            // Se possuir moment
-            // http://momentjs.com/
-            if (item.moment) {
-                /*if (!angular.isDefined(item.momentType)) {
-                    item.momentType = 'date';
-                }*/
-                var dateFormat = moment(Date.parse(data[item.field])).format(item.moment);
-                // Verificar se o valor é do tipo date
-                if (angular.isDate(data[item.field]) || (dateFormat !== 'Invalid date' && item.type === 'date')) {
-                    data[item.field] = dateFormat;
-                } else if (parseInt(data[item.field]) > 0 && parseInt(data[item.field]) <= 12) {
-                    // Mês (m)
-                    data[item.field] = moment.months()[parseInt(data[item.field]) - 1];
-                } else if (String(data[item.field]).length === 8) {
-                    // Senão considerar numérico (YYYYMMDD)
-                    data[item.field] = moment(new Date(String(data[item.field]).substr(0, 4), String(data[item.field]).substr(4, 2) - 1, String(data[item.field]).substr(6, 2))).format(item.moment);
-                } else {
+                if (!angular.isDefined(data[item.field])) {
                     data[item.field] = '';
                 }
+
+                data.edit[item.field] = angular.copy(data[item.field]);
+
+                // Se possuir máscara
+                // https://github.com/the-darc/string-mask
+                if (item.stringMask) {
+                    var maskData = '';
+                    switch (item.stringMask) {
+                        case 'cpf':
+                            maskData = '###.###.###-##';
+                            //item.pad = '00000000000';
+                            break;
+                        case 'cnpj':
+                            maskData = '##.###.###/####-##';
+                            //item.pad = '00000000000000';
+                            break;
+                        case 'cep':
+                            maskData = '#####-###';
+                            //item.pad = '00000000';
+                            break;
+                        case 'brPhone':
+                            if (data[item.field].length === 11) {
+                                maskData = '(##) #####-####';
+                            } else {
+                                maskData = '(##) #####-####';
+                            }
+                            break;
+                        case 'cpfCnpj':
+                            if (item.type === 'varchar' || item.type === 'char' || item.type === 'string') {
+                                if (String(data[item.field]).length === 11) {
+                                    maskData = '###.###.###-##';
+                                } else {
+                                    maskData = '##.###.###/####-##';
+                                }
+                            } else {
+                                data[item.field] = String(Number(data[item.field]));
+                                if (data[item.field].length > 11) {
+                                    maskData = '##.###.###/####-##';
+                                } else {
+                                    maskData = '###.###.###-##';
+                                }
+                            }
+                            break;
+                        default:
+                            maskData = angular.copy(item.stringMask);
+                            break;
+                    }
+                    if (angular.isDefined(item.pad)) {
+                        data[item.field] = pxMaskUtil.maskFormat(pxStringUtil.pad(item.pad, data[item.field], true), maskData).result;
+                    } else {
+                        data[item.field] = pxMaskUtil.maskFormat(String(data[item.field]), maskData).result;
+                    }
+                }
+
+                // Se possuir moment
+                // http://momentjs.com/
+                if (item.moment) {
+                    /*if (!angular.isDefined(item.momentType)) {
+                        item.momentType = 'date';
+                    }*/
+                    var dateFormat = moment(Date.parse(data[item.field])).format(item.moment);
+                    // Verificar se o valor é do tipo date
+                    if (angular.isDate(data[item.field]) || (dateFormat !== 'Invalid date' && item.type === 'date')) {
+                        data[item.field] = dateFormat;
+                    } else if (parseInt(data[item.field]) > 0 && parseInt(data[item.field]) <= 12) {
+                        // Mês (m)
+                        data[item.field] = moment.months()[parseInt(data[item.field]) - 1];
+                    } else if (String(data[item.field]).length === 8) {
+                        // Senão considerar numérico (YYYYMMDD)
+                        data[item.field] = moment(new Date(String(data[item.field]).substr(0, 4), String(data[item.field]).substr(4, 2) - 1, String(data[item.field]).substr(6, 2))).format(item.moment);
+                    } else {
+                        data[item.field] = '';
+                    }
+                }
+
+                // Se possuir numeral
+                // http://numeraljs.com/
+                if (item.numeral) {
+                    switch (item.numeral) {
+                        case 'currency':
+                            data[item.field] = numeral(data[item.field]).format('0,0.00');
+                            break;
+                        default:
+                            data[item.field] = numeral(data[item.field]).format(item.numeral);
+                            break;
+                    }
+                }
             }
 
-            // Se possuir numeral
-            // http://numeraljs.com/
-            if (item.numeral) {
-                switch (item.numeral) {
-                    case 'currency':
-                        data[item.field] = numeral(data[item.field]).format('0,0.00');
-                        break;
-                    default:
-                        data[item.field] = numeral(data[item.field]).format(item.numeral);
-                        break;
-                }
+            if ($scope.labelFunction && item.label) {
+                var labelFunction = $scope.labelFunction({
+                    event: {
+                        item: item,
+                        data: data
+                    }
+                });
             }
         });
 
