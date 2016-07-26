@@ -15,7 +15,7 @@ gulp.task('serve', ['watch'], function() {
 	gulp.src('')
 		.pipe(webserver({
 			livereload: {
-				enable: true,
+				enable: false,
 				filter: function(fileName) {
 					if (fileName.match(/LICENSE|\.json$|\.md$|src$|lib$|node_modules/)) { // exclude all source maps from livereload
 						return false;
