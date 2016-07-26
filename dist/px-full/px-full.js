@@ -2115,10 +2115,19 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                 scope.links = [];
 
                 angular.forEach(scope.fields, function(index) {
-                    var width = '';
+
+                    index.width = index.width || '';
+                    if (index.align === 'center') {
+                        index.align = 'text-center'
+                    } else if (index.align === 'right') {
+                        index.align = 'text-right'
+                    } else {
+                        index.align = 'text-left'
+                    }
+
                     // Checkbox  - Start
                     if (i === 0 && scope.check === true) {
-                        scope.columns += '<th class="text-left" width="1%"><input name="select_all" value="1" type="checkbox"></th>';
+                        scope.columns += '<th class="' + index.align + '" width="1%"><input name="select_all" value="1" type="checkbox"></th>';
 
                         aoColumnsData = {};
                         aoColumnsData.mData = 'pxDataGridRowNumber';
@@ -2164,7 +2173,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     // Verificar se o campo é link
                     if (index.link) {
-                        width = '1%';
+                        index.width = '' || '1%';
                         scope.links.push(index);
                         scope.columnDefs.push({
                             "mData": index.linkId,
@@ -2176,19 +2185,19 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                                 if (typeof index.icon === 'undefined') {
                                     index.icon = '';
                                 }
-                                return "<div class='link'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i></div>";
+                                return "<div class='" + index.align + "'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i></div>";
                             }
                         });
                     } else if (index.label) {
-                        // labelFunction
+                        // labelFunction                        
                         scope.columnDefs.push({
                             "mData": index.linkId,
                             "targets": columnDefs,
                             "searchable": false,
                             "orderable": false,
                             "className": "dt-body-center",
-                            "render": function(data, type, full, meta) {                                
-                                return data;
+                            "render": function(data, type, full, meta) {
+                                return "<div class='" + index.align + "'>" + data + "</div>";
                             }
                         });
                     }
@@ -2199,13 +2208,13 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "targets": columnDefs,
                             "visible": false,
                             "render": function(data, type, full, meta) {
-                                return data;                                
+                                return "<div width='" + index.width + "' class='" + index.align + "'>" + data + "</div>";
                             }
                         });
                     }
                     columnDefs++;
 
-                    scope.columns += '<th width="' + width + '"" class="text-left">' + index.title + '</th>';
+                    scope.columns += '<th width="' + index.width + '" class="' + index.align + '">' + index.title + '</th>';
 
                     aoColumnsData = {};
                     aoColumnsData.mData = index.field;
