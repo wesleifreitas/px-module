@@ -237,6 +237,9 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "orderable": false,
                             "className": "dt-body-center",
                             "render": function(data, type, full, meta) {
+                                if (typeof index.icon === 'undefined') {
+                                    index.icon = '';
+                                }
                                 return "<div class='link'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i></div>";
                             }
                         });
@@ -248,10 +251,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "searchable": false,
                             "orderable": false,
                             "className": "dt-body-center",
-                            "render": function(data, type, full, meta) {
-                                if (typeof index.icon === 'undefined') {
-                                    index.icon = '';
-                                }
+                            "render": function(data, type, full, meta) {                                
                                 return data;
                             }
                         });
