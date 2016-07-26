@@ -632,11 +632,17 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             var $row = $(this).closest('td');
 
             var index = $row.index();
-            var columnIndex = $scope.internalControl.table.column.index('fromVisible', index);
+            var columnIndex = $scope.internalControl.table.column.index('fromData', index);
+            if($scope.edit === true){
+                columnIndex--;
+            }
+            if($scope.check === true){
+                columnIndex--;
+            }
 
             // Dados da linha
             var data = angular.copy($scope.internalControl.table.row($row).data());
-            if (columnIndex <= $scope.links.length) {            
+            if (columnIndex <= $scope.links.length) {
                 data['link'] = $scope.links[columnIndex];
                 data['linkId'] = $scope.links[columnIndex].linkId;
             } else {
