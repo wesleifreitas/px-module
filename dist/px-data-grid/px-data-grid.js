@@ -20,6 +20,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
         template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="table table-striped hovered dataTable" width="100%"></table></div>',
         scope: {
             debug: '=pxDebug',
+            tfoot: '=pxFoot',
             config: '@pxConfig',
             id: '@id',
             lengthChange: '=pxLengthChange',
@@ -304,9 +305,11 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                 scope.dataTable += '<tbody></tbody>';
 
-                scope.dataTable += '<tfoot>';
-                scope.dataTable += scope.columns.replace('<th class="text-left" width="1px"><input name="select_all" value="1" type="checkbox"></th>', '<th class="text-left"></th>');
-                scope.dataTable += '</tfoot>';
+                if (scope.tfoot) {
+                    scope.dataTable += '<tfoot>';
+                    scope.dataTable += scope.columns.replace('<th class="text-left" width="1px"><input name="select_all" value="1" type="checkbox"></th>', '<th class="text-left"></th>');
+                    scope.dataTable += '</tfoot>';
+                }
 
                 scope.dataTable = $sce.trustAsHtml(scope.dataTable);
 
