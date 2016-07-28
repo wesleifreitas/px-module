@@ -45,8 +45,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
             }, {
                 title: 'Nome',
                 field: 'nome',
-                type: 'varchar',
-                align: 'right'
+                type: 'varchar'
             }, {
                 title: 'CPF',
                 field: 'cpf',
