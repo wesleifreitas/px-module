@@ -1223,9 +1223,6 @@ angular.module('px-form-item', ['ui.mask'])
 
 				$scope.setDefault = function(data) {
 					$scope.default = data;
-					$timeout(function() {
-						$scope.oldValue = data[$scope.fields[pxArrayUtil.getIndexByProperty($scope.fields, 'labelField', true)].field];
-					}, 0)
 				}
 
 				$scope.setValue = function(data) {
