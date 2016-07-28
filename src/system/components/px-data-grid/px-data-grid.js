@@ -5,12 +5,12 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
         restrict: 'E',
         replace: true,
         transclude: false,
-        template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="table table-striped hovered dataTable" width="100%"></table></div>',
+        template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="{{class}}" width="100%"></table></div>',
         scope: {
+            id: '@id',            
             debug: '=pxDebug',
             tfoot: '=pxFoot',
-            config: '@pxConfig',
-            id: '@id',
+            config: '@pxConfig',            
             lengthChange: '=pxLengthChange',
             lengthMenu: '=pxLengthMenu',
             ajaxUrl: '@pxAjaxUrl',
@@ -35,6 +35,13 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             labelFunction: '&pxLabelFunction',
         },
         link: function(scope, element, attrs) {
+            // Verificar class                
+            if (attrs.class.trim() === 'px-data-grid') {
+                // default
+                scope.class = "table dataTable hovered";
+            } else {                
+                scope.class = "table dataTable hovered " + attrs.class.replace('px-data-grid','');
+            }
 
             element.on('$destroy', function() {
                 // Remover scope.$watch('config',...
