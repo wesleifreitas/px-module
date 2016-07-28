@@ -1885,6 +1885,9 @@ angular.module('px-form-item', ['ui.mask'])
 
 				$scope.setDefault = function(data) {
 					$scope.default = data;
+					$timeout(function() {
+						$scope.oldValue = data[$scope.fields[pxArrayUtil.getIndexByProperty($scope.fields, 'labelField', true)].field];
+					}, 0)
 				}
 
 				$scope.setValue = function(data) {
@@ -1943,10 +1946,10 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
         transclude: false,
         template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="{{class}}" width="100%"></table></div>',
         scope: {
-            id: '@id',            
+            id: '@id',
             debug: '=pxDebug',
             tfoot: '=pxFoot',
-            config: '@pxConfig',            
+            config: '@pxConfig',
             lengthChange: '=pxLengthChange',
             lengthMenu: '=pxLengthMenu',
             ajaxUrl: '@pxAjaxUrl',
@@ -1975,8 +1978,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             if (attrs.class.trim() === 'px-data-grid') {
                 // default
                 scope.class = "table dataTable hovered";
-            } else {                
-                scope.class = "table dataTable hovered " + attrs.class.replace('px-data-grid','');
+            } else {
+                scope.class = "table dataTable hovered " + attrs.class.replace('px-data-grid', '');
             }
 
             element.on('$destroy', function() {
@@ -2994,6 +2997,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         var data = $scope.internalControl.table.row($scope.internalControl.updatedRow).data();
         angular.forEach($scope.fields, function(item) {
             if (angular.isDefined(data[item.field]) && angular.isDefined(value[item.field])) {
+                data.edit[item.field] = value[item.field];
                 if (!angular.isDefined(item.stringMask)) {
                     data[item.field] = value[item.field];
                 } else {
