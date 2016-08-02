@@ -256,7 +256,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     // Edit - End
 
                     // Verificar se o campo é link
-                    if (index.link) {
+                    if (index.link || index.class) {
                         index.width = '' || '1%';
                         scope.links.push(index);
                         scope.columnDefs.push({
@@ -269,7 +269,11 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                                 if (typeof index.icon === 'undefined') {
                                     index.icon = '';
                                 }
-                                return "<div class='" + index.align + "'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i></div>";
+                                if (index.link) {
+                                    return "<div class='link " + index.align + "'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i></div>";
+                                } else {
+                                    return "<div class='" + index.align + "'><i class='" + index.class + "'>" + index.icon + "</i></div>";
+                                }
                             }
                         });
                     } else if (index.label) {
@@ -320,77 +324,80 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                 scope.dataTable = $sce.trustAsHtml(scope.dataTable);
 
+
+
+                // Armazena linhas selecionadas (checkbox)
+                scope.rowsSelected = [];
+
+                // sDom - Start
+                // http://legacy.datatables.net/usage/options#sDom
+                var sDom = '';
+                sDom += 'l'; // Length changing
+                //sDom += 'f';  // Filtering input
+                sDom += 't'; // The table!
+                sDom += 'i'; // Information
+                sDom += 'p'; // Pagination
+                sDom += 'r'; // pRocessing
+                // sDom - End
+
+                // Configuração do dataTable
+                // Features: http://legacy.datatables.net/usage/features
+                var dataTableConfig = {};
+                // Ajax Url
+                if (scope.ajaxUrl) {
+                    dataTableConfig.ajax = {
+                        "url": scope.ajaxUrl,
+                        "dataSrc": ""
+                    }
+                }
+                // Tradução
+                // https://datatables.net/reference/option/language
+                dataTableConfig.language = {
+                        processing: "Processando...",
+                        search: "Filtrar registros carregados",
+                        lengthMenu: "Visualizar _MENU_ registros",
+                        //info: "Monstrando de _START_ a _END_ no total de _TOTAL_ registros.",
+                        info: '_TOTAL_ registros carregados.',
+                        infoEmpty: "Nenhum registro encontrado",
+                        zeroRecords: "Nenhum registro encontrado",
+                        emptyTable: "Nenhum registro encontrado.",
+                        infoFiltered: "",
+                        paginate: {
+                            first: "Primeira",
+                            previous: "« Anterior",
+                            next: "Próxima »",
+                            last: "Última"
+                        }
+                    }
+                    // Acesso via mobile browser
+                if (pxUtil.isMobile()) {
+                    dataTableConfig.pagingType = "simple";
+                    dataTableConfig.pageLength = 8;
+                }
+                dataTableConfig.bFilter = true;
+                dataTableConfig.bLengthChange = scope.lengthChange;
+                dataTableConfig.lengthMenu = scope.lengthMenu; //[20, 35, 45];
+                dataTableConfig.sDom = sDom;
+                dataTableConfig.bProcessing = true;
+                dataTableConfig.aoColumns = scope.aoColumns;
+                dataTableConfig.destroy = true;
+
+                dataTableConfig.columnDefs = scope.columnDefs;
+
+                dataTableConfig.order = []; //default order
+                dataTableConfig.rowCallback = function(row, data, dataIndex) {
+                    // Linhda ID
+                    var rowId = data.pxDataGridRowNumber;
+
+                    // Se a linha ID está na lista de IDs de linha selecionados
+                    if ($.inArray(rowId, scope.rowsSelected) !== -1) {
+                        $(row).find('input[type="checkbox"]').prop('checked', true);
+                        $(row).addClass('selected');
+                    }
+                };
+                // Único $timeout
+                // Chamado apenas um vez após a configuração da listagem
                 $timeout(function() {
-                    // Armazena linhas selecionadas (checkbox)
-                    scope.rowsSelected = [];
-
-                    // sDom - Start
-                    // http://legacy.datatables.net/usage/options#sDom
-                    var sDom = '';
-                    sDom += 'l'; // Length changing
-                    //sDom += 'f';  // Filtering input
-                    sDom += 't'; // The table!
-                    sDom += 'i'; // Information
-                    sDom += 'p'; // Pagination
-                    sDom += 'r'; // pRocessing
-                    // sDom - End
-
-                    // Configuração do dataTable
-                    // Features: http://legacy.datatables.net/usage/features
-                    var dataTableConfig = {};
-                    // Ajax Url
-                    if (scope.ajaxUrl) {
-                        dataTableConfig.ajax = {
-                            "url": scope.ajaxUrl,
-                            "dataSrc": ""
-                        }
-                    }
-                    // Tradução
-                    // https://datatables.net/reference/option/language
-                    dataTableConfig.language = {
-                            processing: "Processando...",
-                            search: "Filtrar registros carregados",
-                            lengthMenu: "Visualizar _MENU_ registros",
-                            //info: "Monstrando de _START_ a _END_ no total de _TOTAL_ registros.",
-                            info: '_TOTAL_ registros carregados.',
-                            infoEmpty: "Nenhum registro encontrado",
-                            zeroRecords: "Nenhum registro encontrado",
-                            emptyTable: "Nenhum registro encontrado.",
-                            infoFiltered: "",
-                            paginate: {
-                                first: "Primeira",
-                                previous: "« Anterior",
-                                next: "Próxima »",
-                                last: "Última"
-                            }
-                        }
-                        // Acesso via mobile browser
-                    if (pxUtil.isMobile()) {
-                        dataTableConfig.pagingType = "simple";
-                        dataTableConfig.pageLength = 8;
-                    }
-                    dataTableConfig.bFilter = true;
-                    dataTableConfig.bLengthChange = scope.lengthChange;
-                    dataTableConfig.lengthMenu = scope.lengthMenu; //[20, 35, 45];
-                    dataTableConfig.sDom = sDom;
-                    dataTableConfig.bProcessing = true;
-                    dataTableConfig.aoColumns = scope.aoColumns;
-                    dataTableConfig.destroy = true;
-
-                    dataTableConfig.columnDefs = scope.columnDefs;
-
-                    dataTableConfig.order = []; //default order
-                    dataTableConfig.rowCallback = function(row, data, dataIndex) {
-                        // Linhda ID
-                        var rowId = data.pxDataGridRowNumber;
-
-                        // Se a linha ID está na lista de IDs de linha selecionados
-                        if ($.inArray(rowId, scope.rowsSelected) !== -1) {
-                            $(row).find('input[type="checkbox"]').prop('checked', true);
-                            $(row).addClass('selected');
-                        }
-                    };
-
                     //requirejs(["dataTables"], function() {
                     // Inicializar dataTable
                     $('#' + scope.id + '_pxDataTable').dataTable(
@@ -406,7 +413,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     //requirejs(["dataTables"], function() {
                     var table = $('#' + scope.id + '_pxDataTable').DataTable();
-                    scope.internalControl.table = $('#' + scope.id + '_pxDataTable').DataTable();
+                    scope.internalControl.table = table;
                     //});
                     // Verificar se o eventos não foram adicionar
                     if (!scope.events) {
@@ -415,6 +422,11 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         // Eventos adicionados
                         scope.events = true;
                     }
+
+                    // Chama evento px-init        
+                    scope.init({
+                        event: {}
+                    });
                 }, 0);
             });
 
@@ -432,9 +444,9 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
              * @return {void}
              */
             scope.internalControl.getData = function() {
-                $timeout(function() {
-                    scope.getData(0, scope.rowsProcess);
-                }, 0)
+                //$timeout(function() {
+                scope.getData(0, scope.rowsProcess);
+                //}, 0)
             };
 
             /**
@@ -497,9 +509,6 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             scope.currentRecordCount = 0;
 
             // Internal Control - End
-
-            // Chama evento px-init
-            $timeout(scope.init, 0);
         },
         controller: pxDataGridCtrl
     };
@@ -698,11 +707,11 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 itemClick: data,
             }
 
-            $timeout(function() {
-                $scope.itemClick({
-                    event: itemClickEvent
-                });
-            }, 0);
+            //$timeout(function() {
+            $scope.itemClick({
+                event: itemClickEvent
+            });
+            //}, 0);
 
             e.stopPropagation();
         });
@@ -723,11 +732,11 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 itemClick: data,
             }
 
-            $timeout(function() {
-                $scope.itemClick({
-                    event: itemClickEvent
-                });
-            }, 0);
+            //$timeout(function() {
+            $scope.itemClick({
+                event: itemClickEvent
+            });
+            //}, 0);
 
             // Evento Item Click - End
 
@@ -1229,7 +1238,8 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         });
 
         // Atualizar dados do dataTable                                        
-        //requirejs(["dataTables"], function() {
+        //requirejs(["dataTables"], function() {        
+        //$scope.internalControl.table.row.add(data).draw();
         $('#' + $scope.id + '_pxDataTable').DataTable().row.add(data).draw();
         //});
     }
