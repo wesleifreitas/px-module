@@ -114,7 +114,8 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      * Evento inicializar
      * @return {Void}
      */
-    $scope.dgExemploInit = function() {
+    $scope.dgExemploInit = function(event) {
+        // Recuperar dados
         $scope.dgExemploControl.getData();
     }
 }]);
