@@ -1965,6 +1965,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             check: '=pxCheck',
             edit: '=pxEdit',
             init: '&pxInit',
+            configChange: '&pxConfigChange',
             itemClick: '&pxItemClick',
             itemEdit: '&pxItemEdit',
             dataInit: '=pxDataInit',
@@ -1974,6 +1975,9 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             labelFunction: '&pxLabelFunction',
         },
         link: function(scope, element, attrs) {
+
+            scope.creationcomplete = false;
+
             // Verificar class                
             if (attrs.class.trim() === 'px-data-grid') {
                 // default
@@ -2350,10 +2354,22 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         scope.events = true;
                     }
 
-                    // Chama evento px-init        
-                    scope.init({
-                        event: {}
-                    });
+                    if (!scope.creationcomplete) {
+                        scope.creationcomplete = true;
+                        // Chama evento px-inii
+                        scope.init({
+                            event: {
+                                config: JSON.parse(scope.config)
+                            }
+                        });
+                    } else {
+                        // Chama evento px-config-change
+                        scope.configChange({
+                            event: {
+                                config: JSON.parse(scope.config)
+                            }
+                        });
+                    }
                 }, 0);
             });
 
