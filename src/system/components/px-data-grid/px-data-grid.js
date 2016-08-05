@@ -688,7 +688,6 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
         // Evento click link
         $('#' + $scope.id + '_pxDataTable tbody').on('click', 'td div i', function(e) {
-            alert();
             // Evento Item Click - Start
             var $row = $(this).closest('td');
 
