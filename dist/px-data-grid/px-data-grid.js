@@ -17,6 +17,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
         restrict: 'E',
         replace: true,
         transclude: false,
+        //template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="table table-striped hovered dataTable" width="100%"></table></div>',
         template: '<div class="px-data-grid"><table id="{{id}}_pxDataTable" ng-bind-html="dataTable" class="{{class}}" width="100%"></table></div>',
         scope: {
             id: '@id',
@@ -49,7 +50,10 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
         },
         link: function(scope, element, attrs) {
 
-            scope.creationcomplete = false;
+            element.on('$destroy', function() {
+                // Remover scope.$watch('config',...
+                watchConfig();
+            });
 
             // Verificar class                
             if (attrs.class.trim() === 'px-data-grid') {
@@ -58,11 +62,6 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             } else {
                 scope.class = "table dataTable hovered " + attrs.class.replace('px-data-grid', '');
             }
-
-            element.on('$destroy', function() {
-                // Remover scope.$watch('config',...
-                watchConfig();
-            });
 
             if (!angular.isDefined(scope.id) || scope.id === '') {
                 console.warn('pxDataGrid: Existe um px-data-grid sem id, isto pode causar sérios problemas em seu código!');
@@ -73,7 +72,6 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
             // Quantidade de linhas por consulta
             scope.rowsProcess = parseInt(scope.rowsProcess) || 100;
-
 
             // Consulta por demanda?
             if (!angular.isDefined(scope.demand)) {
@@ -128,6 +126,9 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                 // Colunas para o <table>
                 scope.columns = '';
+
+                // Rodapé <table>
+                scope.foot = '';
 
                 scope.schema = newValue.schema || 'dbo';
                 scope.table = newValue.table;
@@ -215,7 +216,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     // Checkbox  - Start
                     if (i === 0 && scope.check === true) {
-                        scope.columns += '<th class="' + index.align + '" width="1%"><input name="select_all" value="1" type="checkbox"></th>';
+                        scope.columns += '<th class="text-left" width="1%"><input name="select_all" value="1" type="checkbox"></th>';
+                        scope.foot += '<th width="1%"></th>';
 
                         aoColumnsData = {};
                         aoColumnsData.mData = 'pxDataGridRowNumber';
@@ -239,6 +241,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     // Edit - Start                        
                     if (i === 1 && scope.edit === true) {
                         scope.columns += '<th class="text-center" width="1%"><i class=""></i></th>';
+                        scope.foot += '<th width="1%"></th>';
 
                         aoColumnsData = {};
                         aoColumnsData.mData = 'edit';
@@ -249,7 +252,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "targets": columnDefs,
                             "searchable": false,
                             "orderable": false,
-                            "className": "dt-body-center",
+                            "className": "dt-body-center edit",
                             "render": function(data, type, full, meta) {
                                 return "<i class='fa fa-pencil'>";
                                 //return "<i class='fa fa-pencil'> <b>Editar</b>";
@@ -258,7 +261,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         columnDefs++;
                     }
                     // Edit - End
-
+                  
                     // Verificar se o campo é link
                     if (index.link || index.class) {
                         index.width = '' || '1%';
@@ -294,25 +297,28 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         });
                     }
 
-                    // Verificar se o campo é visível
+                    // Verificar se o campo é invisível
                     if (index.visible === false) {
                         scope.columnDefs.push({
                             "targets": columnDefs,
                             "visible": false,
                             "render": function(data, type, full, meta) {
-                                return "<div width='" + index.width + "' class='" + index.align + "'>" + data + "</div>";
+                                return data;                                
                             }
                         });
                     }
                     columnDefs++;
 
-                    scope.columns += '<th width="' + index.width + '" class="' + index.align + '">' + index.title + '</th>';
+                    scope.columns += '<th class="text-left">' + index.title + '</th>';
+                    //scope.foot += '<th class="text-left">' + index.title + '</th>';
+                    scope.foot += '<th class="text-left"></th>';
 
                     aoColumnsData = {};
                     aoColumnsData.mData = index.field;
 
                     scope.aoColumns.push(aoColumnsData);
                     i++;
+                    
                 });
                 scope.dataTable += scope.columns;
 
@@ -320,88 +326,85 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                 scope.dataTable += '<tbody></tbody>';
 
-                if (scope.tfoot) {
-                    scope.dataTable += '<tfoot>';
-                    scope.dataTable += scope.columns.replace('<th class="text-left" width="1px"><input name="select_all" value="1" type="checkbox"></th>', '<th class="text-left"></th>');
-                    scope.dataTable += '</tfoot>';
-                }
+                scope.dataTable += '<tfoot class="tfoot">';                    
+                scope.dataTable += scope.foot;
+                scope.dataTable += '</tfoot>';
 
                 scope.dataTable = $sce.trustAsHtml(scope.dataTable);
 
-
-
-                // Armazena linhas selecionadas (checkbox)
-                scope.rowsSelected = [];
-
-                // sDom - Start
-                // http://legacy.datatables.net/usage/options#sDom
-                var sDom = '';
-                sDom += 'l'; // Length changing
-                //sDom += 'f';  // Filtering input
-                sDom += 't'; // The table!
-                sDom += 'i'; // Information
-                sDom += 'p'; // Pagination
-                sDom += 'r'; // pRocessing
-                // sDom - End
-
-                // Configuração do dataTable
-                // Features: http://legacy.datatables.net/usage/features
-                var dataTableConfig = {};
-                // Ajax Url
-                if (scope.ajaxUrl) {
-                    dataTableConfig.ajax = {
-                        "url": scope.ajaxUrl,
-                        "dataSrc": ""
-                    }
-                }
-                // Tradução
-                // https://datatables.net/reference/option/language
-                dataTableConfig.language = {
-                        processing: "Processando...",
-                        search: "Filtrar registros carregados",
-                        lengthMenu: "Visualizar _MENU_ registros",
-                        //info: "Monstrando de _START_ a _END_ no total de _TOTAL_ registros.",
-                        info: '_TOTAL_ registros carregados.',
-                        infoEmpty: "Nenhum registro encontrado",
-                        zeroRecords: "Nenhum registro encontrado",
-                        emptyTable: "Nenhum registro encontrado.",
-                        infoFiltered: "",
-                        paginate: {
-                            first: "Primeira",
-                            previous: "« Anterior",
-                            next: "Próxima »",
-                            last: "Última"
-                        }
-                    }
-                    // Acesso via mobile browser
-                if (pxUtil.isMobile()) {
-                    dataTableConfig.pagingType = "simple";
-                    dataTableConfig.pageLength = 8;
-                }
-                dataTableConfig.bFilter = true;
-                dataTableConfig.bLengthChange = scope.lengthChange;
-                dataTableConfig.lengthMenu = scope.lengthMenu; //[20, 35, 45];
-                dataTableConfig.sDom = sDom;
-                dataTableConfig.bProcessing = true;
-                dataTableConfig.aoColumns = scope.aoColumns;
-                dataTableConfig.destroy = true;
-
-                dataTableConfig.columnDefs = scope.columnDefs;
-
-                dataTableConfig.order = []; //default order
-                dataTableConfig.rowCallback = function(row, data, dataIndex) {
-                    // Linhda ID
-                    var rowId = data.pxDataGridRowNumber;
-
-                    // Se a linha ID está na lista de IDs de linha selecionados
-                    if ($.inArray(rowId, scope.rowsSelected) !== -1) {
-                        $(row).find('input[type="checkbox"]').prop('checked', true);
-                        $(row).addClass('selected');
-                    }
-                };
                 // Único $timeout
                 // Chamado apenas um vez após a configuração da listagem
                 $timeout(function() {
+                    // Armazena linhas selecionadas (checkbox)
+                    scope.rowsSelected = [];
+
+                    // sDom - Start
+                    // http://legacy.datatables.net/usage/options#sDom
+                    var sDom = '';
+                    sDom += 'l'; // Length changing
+                    //sDom += 'f';  // Filtering input
+                    sDom += 't'; // The table!
+                    sDom += 'i'; // Information
+                    sDom += 'p'; // Pagination
+                    sDom += 'r'; // pRocessing
+                    // sDom - End
+
+                    // Configuração do dataTable
+                    // Features: http://legacy.datatables.net/usage/features
+                    var dataTableConfig = {};
+                    // Ajax Url
+                    if (scope.ajaxUrl) {
+                        dataTableConfig.ajax = {
+                            "url": scope.ajaxUrl,
+                            "dataSrc": ""
+                        }
+                    }
+                    // Tradução
+                    // https://datatables.net/reference/option/language
+                    dataTableConfig.language = {
+                            processing: "Processando...",
+                            search: "Filtrar registros carregados",
+                            lengthMenu: "Visualizar _MENU_ registros",
+                            //info: "Monstrando de _START_ a _END_ no total de _TOTAL_ registros.",
+                            info: '_TOTAL_ registros carregados.',
+                            infoEmpty: "Nenhum registro encontrado",
+                            zeroRecords: "Nenhum registro encontrado",
+                            emptyTable: "Nenhum registro encontrado.",
+                            infoFiltered: "",
+                            paginate: {
+                                first: "Primeira",
+                                previous: "« Anterior",
+                                next: "Próxima »",
+                                last: "Última"
+                            }
+                        }
+                        // Acesso via mobile browser
+                    if (pxUtil.isMobile()) {
+                        dataTableConfig.pagingType = "simple";
+                        dataTableConfig.pageLength = 8;
+                    }
+                    dataTableConfig.bFilter = true;
+                    dataTableConfig.bLengthChange = scope.lengthChange;
+                    dataTableConfig.lengthMenu = scope.lengthMenu; //[20, 35, 45];
+                    dataTableConfig.sDom = sDom;
+                    dataTableConfig.bProcessing = true;
+                    dataTableConfig.aoColumns = scope.aoColumns;
+                    dataTableConfig.destroy = true;
+
+                    dataTableConfig.columnDefs = scope.columnDefs;
+
+                    dataTableConfig.order = []; //default order
+                    dataTableConfig.rowCallback = function(row, data, dataIndex) {
+                        // Linhda ID
+                        var rowId = data.pxDataGridRowNumber;
+
+                        // Se a linha ID está na lista de IDs de linha selecionados
+                        if ($.inArray(rowId, scope.rowsSelected) !== -1) {
+                            $(row).find('input[type="checkbox"]').prop('checked', true);
+                            $(row).addClass('selected');
+                        }
+                    };
+
                     //requirejs(["dataTables"], function() {
                     // Inicializar dataTable
                     $('#' + scope.id + '_pxDataTable').dataTable(
@@ -417,7 +420,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     //requirejs(["dataTables"], function() {
                     var table = $('#' + scope.id + '_pxDataTable').DataTable();
-                    scope.internalControl.table = table;
+                    scope.internalControl.table = $('#' + scope.id + '_pxDataTable').DataTable();
                     //});
                     // Verificar se o eventos não foram adicionar
                     if (!scope.events) {
@@ -429,7 +432,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     if (!scope.creationcomplete) {
                         scope.creationcomplete = true;
-                        // Chama evento px-inii
+                        // Chama evento px-init
                         scope.init({
                             event: {
                                 config: JSON.parse(scope.config)
@@ -460,9 +463,9 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
              * @return {void}
              */
             scope.internalControl.getData = function() {
-                //$timeout(function() {
-                scope.getData(0, scope.rowsProcess);
-                //}, 0)
+                $timeout(function() {
+                    scope.getData(0, scope.rowsProcess);
+                }, 0)
             };
 
             /**
@@ -697,7 +700,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
         // Evento click link
         $('#' + $scope.id + '_pxDataTable tbody').on('click', 'td div i', function(e) {
-
+            alert();
             // Evento Item Click - Start
             var $row = $(this).closest('td');
 
@@ -1066,7 +1069,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
                     var infoMessage = info.recordsTotal + ' registros carregados.'
 
-                    if (angular.isNumber($scope.nextRowFrom)) {
+                    if (angular.isNumber($scope.recordCount)) {
                         infoMessage += ' Total de registros na base de dados: ' + $scope.recordCount;
                     }
 

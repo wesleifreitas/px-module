@@ -1,12 +1,15 @@
-div .px-data-grid{    
+div .px-data-grid {
   border: 0px !important;
 }
-
+div .px-data-grid table {
+  margin-bottom: 0 !important;
+}
 .px-data-grid table.dataTable.select tbody tr, table.dataTable thead th:first-child {
   cursor: pointer;
   width: 1%;
 }
 .px-data-grid table.dataTable tbody tr, table.dataTable thead th {
+
   /*cursor: pointer;*/
   white-space: nowrap;
 }
@@ -203,6 +206,19 @@ div .px-data-grid{
 .px-data-grid .px-pointer {
   cursor: pointer;
 }
-.px-data-grid .link i{
+.px-data-grid .edit i {
   cursor: pointer;
+}
+.px-data-grid .link i {
+  cursor: pointer;
+}
+.px-data-grid .tfoot th {
+  border: none;
+}
+table .tfoot:last-child {  
+  border: none;
+}
+.px-data-grid .table-bordered {
+  border: none;
+    border-top: 1px solid #ddd !important;    
 }
