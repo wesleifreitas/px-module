@@ -1,5 +1,6 @@
 div .px-data-grid {
   border: 0px !important;
+  margin-top: 5px;
 }
 div .px-data-grid table {
   margin-bottom: 0 !important;
