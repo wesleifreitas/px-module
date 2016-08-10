@@ -31,11 +31,11 @@ angular.module('px-form-item', ['ui.mask'])
 				minLengthError: '@pxMinlengthError'
 			},
 			link: function(scope, element, attrs, formCtrl) {
+				scope.elementShowError = angular.element($('#' + scope.element).get(0));
+				scope.elementShowError.on('keyup blur', function(event) {
+					scope.validateElement();
+				});
 				$timeout(function() {
-					scope._element = angular.element($('#' + scope.element).get(0));
-					scope._element.on('keyup blur', function(event) {
-						scope.validateElement();
-					});
 					scope.validateElement();
 				}, 0);
 			},
@@ -55,7 +55,7 @@ angular.module('px-form-item', ['ui.mask'])
 
 
 					// ngModelController do elemento
-					var _ngModelCtrl = $scope._element.data('$ngModelController');
+					var _ngModelCtrl = $scope.elementShowError.data('$ngModelController');
 
 					if (!angular.isDefined(_ngModelCtrl)) {
 						return;
@@ -82,7 +82,7 @@ angular.module('px-form-item', ['ui.mask'])
 					if (_ngModelCtrl.$invalid) {
 						$scope.$apply(function() {
 							if (_ngModelCtrl.$error.deps) {
-								$scope.error = $scope._element.scope().depsError;
+								$scope.error = $scope.elementShowError.scope().depsError;
 							} else if (_ngModelCtrl.$error.required || _ngModelCtrl.$error.requiredsearch) {
 								$scope.error = 'Campo obrigatório';
 							} else if (_ngModelCtrl.$error.email) {
@@ -102,7 +102,7 @@ angular.module('px-form-item', ['ui.mask'])
 							}
 						});
 
-						$scope._element.css({
+						$scope.elementShowError.css({
 							borderColor: '#A94442' //'#DF0707'
 						});
 					} else {
@@ -110,7 +110,7 @@ angular.module('px-form-item', ['ui.mask'])
 							$scope.error = '';
 						});
 
-						$scope._element.css({
+						$scope.elementShowError.css({
 							borderColor: '#CCCCCC'
 						});
 					}
@@ -290,7 +290,7 @@ angular.module('px-form-item', ['ui.mask'])
 	// pxBrPhoneMask
 	// (99) 9999-9999 / (99) 9999-9999?9
 	// (99) 99999-999
-	.directive('pxBrPhoneMask', ['$compile', function($compile) {
+	.directive('pxBrPhoneMask', ['$compile', '$timeout', function($compile, $timeout) {
 		return {
 			priority: 100,
 			restrict: 'A',
@@ -307,6 +307,10 @@ angular.module('px-form-item', ['ui.mask'])
 				if (!ngModelCtrl) {
 					return;
 				}
+
+				$timeout(function() {
+					console.info('ngModelCtrl', ngModelCtrl);
+				}, 0);
 
 				var extraNumberCompare = 11;
 				if (scope.ddd === false) {
