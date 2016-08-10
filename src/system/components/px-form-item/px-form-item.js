@@ -31,15 +31,16 @@ angular.module('px-form-item', ['ui.mask'])
 				minLengthError: '@pxMinlengthError'
 			},
 			link: function(scope, element, attrs, formCtrl) {
-				// Chama evento px-init
-				$timeout(scope.init, 0);
+				$timeout(function() {
+					scope._element = angular.element($('#' + scope.element).get(0));
+					scope._element.on('keyup blur', function(event) {
+						scope.validateElement();
+					});
+					scope.validateElement();
+				}, 0);
 			},
 			controller: ['$scope', function($scope) {
-				// Inicializar validação
-				$scope.init = function() {
-
-					// Armazena mensagem de erro de validação
-					$scope.error = '';
+				$scope.validateElement = function() {
 
 					var selectorName = '#' + $scope.element;
 
@@ -52,69 +53,67 @@ angular.module('px-form-item', ['ui.mask'])
 						selectorName += '_inputSearch';
 					}
 
-					// Elemento que será validado
-					var _element = angular.element($(selectorName).get(0));
+
 					// ngModelController do elemento
-					var _ngModelCtrl = _element.data('$ngModelController');
+					var _ngModelCtrl = $scope._element.data('$ngModelController');
+
+					if (!angular.isDefined(_ngModelCtrl)) {
+						return;
+					}
 
 					var _confirm = angular.element($('#' + $scope.confirm).get(0));
 					var _confirmModelCtrl = _confirm.data('$ngModelController');
 
-					// Eventos keyup blur
-					_element.on('keyup blur', function(event) {
+					// Armazena mensagem de erro de validação
+					$scope.error = '';
 
-						if (!angular.isDefined(_ngModelCtrl)) {
-							return;
-						}
-
-						// Verificar se possui campo de confirmação
-						if (angular.isDefined($scope.confirm)) {
-							if (String(_confirmModelCtrl.$modelValue) !== String(_ngModelCtrl.$modelValue)) {
-								//_ngModelCtrl.$error.confirm = true;
-								_ngModelCtrl.$setValidity('confirm', false);
-							} else {
-								//_ngModelCtrl.$error.confirm = null;
-								_ngModelCtrl.$setValidity('confirm', true);
-							}
-						}
-
-						// Verificar ser o elemento está inválido
-						if (_ngModelCtrl.$invalid) {
-							$scope.$apply(function() {
-								if (_ngModelCtrl.$error.deps) {
-									$scope.error = _element.scope().depsError;
-								} else if (_ngModelCtrl.$error.required || _ngModelCtrl.$error.requiredsearch) {
-									$scope.error = 'Campo obrigatório';
-								} else if (_ngModelCtrl.$error.email) {
-									$scope.error = 'E-mail inválido';
-								} else if (_ngModelCtrl.$error.minlength) {
-									$scope.error = $scope.minLengthError;
-								} else if (_ngModelCtrl.$error.unique) {
-									$scope.error = 'Campo já existente';
-								} else if (_ngModelCtrl.$error.confirm) {
-									if (!angular.isDefined($scope.confirmError)) {
-										$scope.error = 'Campo não confere';
-									} else {
-										$scope.error = $scope.confirmError;
-									}
-								} else {
-									console.warn('px-show-error:', '$error ausente', _ngModelCtrl.$error);
-								}
-							});
-
-							_element.css({
-								borderColor: '#A94442' //'#DF0707'
-							});
+					// Verificar se possui campo de confirmação
+					if (angular.isDefined($scope.confirm)) {
+						if (String(_confirmModelCtrl.$modelValue) !== String(_ngModelCtrl.$modelValue)) {
+							//_ngModelCtrl.$error.confirm = true;
+							_ngModelCtrl.$setValidity('confirm', false);
 						} else {
-							$scope.$apply(function() {
-								$scope.error = '';
-							});
-
-							_element.css({
-								borderColor: '#CCCCCC'
-							});
+							//_ngModelCtrl.$error.confirm = null;
+							_ngModelCtrl.$setValidity('confirm', true);
 						}
-					});
+					}
+
+					// Verificar ser o elemento está inválido
+					if (_ngModelCtrl.$invalid) {
+						$scope.$apply(function() {
+							if (_ngModelCtrl.$error.deps) {
+								$scope.error = $scope._element.scope().depsError;
+							} else if (_ngModelCtrl.$error.required || _ngModelCtrl.$error.requiredsearch) {
+								$scope.error = 'Campo obrigatório';
+							} else if (_ngModelCtrl.$error.email) {
+								$scope.error = 'E-mail inválido';
+							} else if (_ngModelCtrl.$error.minlength) {
+								$scope.error = $scope.minLengthError;
+							} else if (_ngModelCtrl.$error.unique) {
+								$scope.error = 'Campo já existente';
+							} else if (_ngModelCtrl.$error.confirm) {
+								if (!angular.isDefined($scope.confirmError)) {
+									$scope.error = 'Campo não confere';
+								} else {
+									$scope.error = $scope.confirmError;
+								}
+							} else {
+								console.warn('px-show-error:', '$error ausente', _ngModelCtrl.$error);
+							}
+						});
+
+						$scope._element.css({
+							borderColor: '#A94442' //'#DF0707'
+						});
+					} else {
+						$scope.$apply(function() {
+							$scope.error = '';
+						});
+
+						$scope._element.css({
+							borderColor: '#CCCCCC'
+						});
+					}
 				}
 			}]
 		};
