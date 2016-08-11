@@ -994,10 +994,6 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 					return;
 				}
 
-				$timeout(function() {
-					console.info('ngModelCtrl', ngModelCtrl);
-				}, 0);
-
 				var extraNumberCompare = 11;
 				if (scope.ddd === false) {
 					extraNumberCompare = 9;
