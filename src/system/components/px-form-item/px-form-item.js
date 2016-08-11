@@ -1,4 +1,4 @@
-angular.module('px-form-item', ['ui.mask'])
+angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 	// pxEnter
 	// Chamar função ao teclar Enter
 	.directive('pxEnter', [function() {
@@ -13,7 +13,31 @@ angular.module('px-form-item', ['ui.mask'])
 			});
 		};
 	}])
-	// Validar campos
+	// pxMessages
+	// Chamar função ao teclar Enter
+	.directive('pxMessage', [function() {
+		return {
+			restrict: 'E',
+			require: '^form',
+			replace: true,
+			transclude: false,
+			template: '<div class="help-block" ng-messages="elementMessage"><p ng-message="required">{{messages.required}}</p><p ng-message="email">{{messages.email}}</p><p ng-message="minlength">{{messages.minlength}}</p><p ng-message="maxlength">{{messages.maxlength}}</p></div>',
+			scope: {
+				elementMessage: '=pxElement',
+				messagesCustom: '=?pxMessages'
+			},
+			link: function(scope, element, attrs, formCtrl) {
+				scope.elementMessage = scope.elementMessage.$error;
+				scope.messagesCustom = scope.messagesCustom || {};
+				scope.messages = {};
+				scope.messages.required = scope.messagesCustom.required || 'Campo obrigatório.';
+				scope.messages.email = scope.messagesCustom.email || 'E-mail inválido.';
+				scope.messages.minlength = scope.messagesCustom.minlength || 'Muito curto.';
+				scope.messages.maxlength = scope.messagesCustom.maxlength || 'Muito logon.';
+			}
+		};
+	}])
+	// Validar campos?
 	// http://stackoverflow.com/questions/18063561/access-isolated-parent-scope-from-a-transcluded-directive
 	// http://stackoverflow.com/questions/21488803/how-does-one-preserve-scope-with-nested-directives
 	// https://groups.google.com/forum/#!topic/angular/BZqs4TXyOcw 
