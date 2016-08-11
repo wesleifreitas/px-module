@@ -660,7 +660,7 @@ function pxUtil(pxConfig) {
             }
         }
     }
-angular.module('px-form-item', ['ui.mask'])
+angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 	// pxEnter
 	// Chamar função ao teclar Enter
 	.directive('pxEnter', [function() {
@@ -675,7 +675,31 @@ angular.module('px-form-item', ['ui.mask'])
 			});
 		};
 	}])
-	// Validar campos
+	// pxMessages
+	// Chamar função ao teclar Enter
+	.directive('pxMessage', [function() {
+		return {
+			restrict: 'E',
+			require: '^form',
+			replace: true,
+			transclude: false,
+			template: '<div class="help-block" ng-messages="elementMessage"><p ng-message="required">{{messages.required}}</p><p ng-message="email">{{messages.email}}</p><p ng-message="minlength">{{messages.minlength}}</p><p ng-message="maxlength">{{messages.maxlength}}</p></div>',
+			scope: {
+				elementMessage: '=pxElement',
+				messagesCustom: '=?pxMessages'
+			},
+			link: function(scope, element, attrs, formCtrl) {
+				scope.elementMessage = scope.elementMessage.$error;
+				scope.messagesCustom = scope.messagesCustom || {};
+				scope.messages = {};
+				scope.messages.required = scope.messagesCustom.required || 'Campo obrigatório.';
+				scope.messages.email = scope.messagesCustom.email || 'E-mail inválido.';
+				scope.messages.minlength = scope.messagesCustom.minlength || 'Muito curto.';
+				scope.messages.maxlength = scope.messagesCustom.maxlength || 'Muito logon.';
+			}
+		};
+	}])
+	// Validar campos?
 	// http://stackoverflow.com/questions/18063561/access-isolated-parent-scope-from-a-transcluded-directive
 	// http://stackoverflow.com/questions/21488803/how-does-one-preserve-scope-with-nested-directives
 	// https://groups.google.com/forum/#!topic/angular/BZqs4TXyOcw 
@@ -693,11 +717,11 @@ angular.module('px-form-item', ['ui.mask'])
 				minLengthError: '@pxMinlengthError'
 			},
 			link: function(scope, element, attrs, formCtrl) {
+				scope.elementShowError = angular.element($('#' + scope.element).get(0));
+				scope.elementShowError.on('keyup blur', function(event) {
+					scope.validateElement();
+				});
 				$timeout(function() {
-					scope._element = angular.element($('#' + scope.element).get(0));
-					scope._element.on('keyup blur', function(event) {
-						scope.validateElement();
-					});
 					scope.validateElement();
 				}, 0);
 			},
@@ -717,7 +741,7 @@ angular.module('px-form-item', ['ui.mask'])
 
 
 					// ngModelController do elemento
-					var _ngModelCtrl = $scope._element.data('$ngModelController');
+					var _ngModelCtrl = $scope.elementShowError.data('$ngModelController');
 
 					if (!angular.isDefined(_ngModelCtrl)) {
 						return;
@@ -744,7 +768,7 @@ angular.module('px-form-item', ['ui.mask'])
 					if (_ngModelCtrl.$invalid) {
 						$scope.$apply(function() {
 							if (_ngModelCtrl.$error.deps) {
-								$scope.error = $scope._element.scope().depsError;
+								$scope.error = $scope.elementShowError.scope().depsError;
 							} else if (_ngModelCtrl.$error.required || _ngModelCtrl.$error.requiredsearch) {
 								$scope.error = 'Campo obrigatório';
 							} else if (_ngModelCtrl.$error.email) {
@@ -764,7 +788,7 @@ angular.module('px-form-item', ['ui.mask'])
 							}
 						});
 
-						$scope._element.css({
+						$scope.elementShowError.css({
 							borderColor: '#A94442' //'#DF0707'
 						});
 					} else {
@@ -772,7 +796,7 @@ angular.module('px-form-item', ['ui.mask'])
 							$scope.error = '';
 						});
 
-						$scope._element.css({
+						$scope.elementShowError.css({
 							borderColor: '#CCCCCC'
 						});
 					}
@@ -952,7 +976,7 @@ angular.module('px-form-item', ['ui.mask'])
 	// pxBrPhoneMask
 	// (99) 9999-9999 / (99) 9999-9999?9
 	// (99) 99999-999
-	.directive('pxBrPhoneMask', ['$compile', function($compile) {
+	.directive('pxBrPhoneMask', ['$compile', '$timeout', function($compile, $timeout) {
 		return {
 			priority: 100,
 			restrict: 'A',
@@ -969,6 +993,10 @@ angular.module('px-form-item', ['ui.mask'])
 				if (!ngModelCtrl) {
 					return;
 				}
+
+				$timeout(function() {
+					console.info('ngModelCtrl', ngModelCtrl);
+				}, 0);
 
 				var extraNumberCompare = 11;
 				if (scope.ddd === false) {
