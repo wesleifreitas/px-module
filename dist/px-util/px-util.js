@@ -53,10 +53,10 @@ function pxArrayUtil() {
      */
     function getIndexByProperty(array, property, value) {
         for (var i = array.length - 1; i >= 0; i--) {
-            if (array[i][property] == value) {
+            if (array[i][property] === value) {
                 return i;
             }
-        };
+        }
         return -1;
     }
 }
@@ -70,13 +70,13 @@ function pxDateUtil() {
     var service = {};
     // Verificar se moment não está definido e se require está definido
     if (typeof moment === 'undefined' && typeof require !== 'undefined') {
-        service.moment = require('moment')
+        service.moment = require('moment');
     } else if (typeof moment === 'function') {
         service.moment = moment;
     } else {
         service.moment = function() {
             console.error('pxDateUtil:', 'moment.js não importada');
-        }
+        };
     }
 
     service.dateAdd = dateAdd;
@@ -155,7 +155,7 @@ function pxDateUtil() {
                 name: moment.months()[i],
                 id: i
             });
-        };
+        }
 
         return arrayData;
     }
@@ -240,15 +240,21 @@ function pxMaskUtil() {
     }
 
     function concatChar(text, character, options, token) {
-        if (token && typeof token.transform === 'function') character = token.transform(character);
-        if (options.reverse) return character + text;
+        if (token && typeof token.transform === 'function') {
+            character = token.transform(character);
+        }
+        if (options.reverse) {
+            return character + text;
+        }
         return text + character;
     }
 
     function hasMoreTokens(pattern, pos, inc) {
         var pc = pattern.charAt(pos);
         var token = tokens[pc];
-        if (pc === '') return false;
+        if (pc === '') {
+            return false;
+        }
         return token && !token.escape ? true : hasMoreTokens(pattern, pos + inc, inc);
     }
 
@@ -325,7 +331,9 @@ function pxMaskUtil() {
             if (!inRecursiveMode && token && token.recursive) {
                 recursive.push(pc);
             } else if (inRecursiveMode && !vc) {
-                if (!token || !token.recursive) formatted = concatChar(formatted, pc, options, token);
+                if (!token || !token.recursive) {
+                    formatted = concatChar(formatted, pc, options, token);
+                }
                 continue;
             } else if (recursive.length > 0 && token && !token.recursive) {
                 // Recursive tokens most be the last tokens of the pattern
@@ -364,7 +372,7 @@ function pxMaskUtil() {
             result: formatted,
             valid: valid
         };
-    };
+    }
 }
 angular.module('px-string-util', [])
     .factory('pxStringUtil', pxStringUtil);
@@ -389,8 +397,9 @@ function pxStringUtil() {
      * @return {String}         string preenchida
      */
     function pad(pad, str, padLeft) {
-        if (typeof str === 'undefined')
+        if (typeof str === 'undefined') {
             return pad;
+        }
         if (padLeft) {
             return (pad + str).slice(-pad.length);
         } else {
@@ -603,7 +612,7 @@ function pxUtil(pxConfig) {
          */
         function getGroupConfig(table) {
             var group = {};
-            var table = table || pxConfig.GROUP_TABLE;
+            table = table || pxConfig.GROUP_TABLE;
             if (pxConfig.GROUP_SUFFIX === '') {
                 group.item = pxConfig.GROUP_ITEM;
                 group.label = pxConfig.GROUP_LABEL;
@@ -613,7 +622,7 @@ function pxUtil(pxConfig) {
                 for (var i = 0; i < pxConfig.GROUP_REPLACE.length; i++) {
                     group.item = group.item.replace(pxConfig.GROUP_REPLACE[i], '');
                     group.label = group.label.replace(pxConfig.GROUP_REPLACE[i], '');
-                };
+                }
             }
             return group;
         }
@@ -622,8 +631,8 @@ function pxUtil(pxConfig) {
          * @return {Boolean}
          */
         function isMobile() {
-            var userAgent = navigator.userAgent.toLowerCase();
-            if (userAgent.search(/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i) != -1) {
+            var userAgent = navigator.userAgent.toLowerCase(); // jshint ignore:line
+            if (userAgent.search(/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i) !== -1) {
                 return true;
             } else {
                 return false;

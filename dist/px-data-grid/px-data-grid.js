@@ -8,9 +8,9 @@ angular.module('px-data-grid.filter', [])
 			} else {
 				return 'fa fa-refresh';
 			}
-		}
+		};
 	}]);
-var module = angular.module('px-data-grid', ['px-data-grid.service', 'px-data-grid.filter', 'px-array-util', 'px-date-util', 'px-mask-util', 'px-string-util', 'px-util']);
+var module = angular.module('px-data-grid', ['px-data-grid.service', 'px-data-grid.filter', 'px-array-util', 'px-date-util', 'px-mask-util', 'px-string-util', 'px-util']); // jshint ignore:line
 
 module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout', '$sce', '$rootScope', function(pxConfig, pxArrayUtil, pxUtil, $timeout, $sce, $rootScope) {
     return {
@@ -153,17 +153,17 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         scope.groupItem = scope.groupItem || pxConfig.GROUP_ITEM;
                     } else if (!angular.isDefined(scope.groupItem)) {
                         scope.groupItem = scope.groupItem || scope.table + '_' + pxConfig.GROUP_ITEM_SUFFIX;
-                        for (var i = 0; i < pxConfig.GROUP_REPLACE.length; i++) {
-                            scope.groupItem = scope.groupItem.replace(pxConfig.GROUP_REPLACE[i], '');
-                        };
+                        for (var j = 0; j < pxConfig.GROUP_REPLACE.length; j++) {
+                            scope.groupItem = scope.groupItem.replace(pxConfig.GROUP_REPLACE[j], '');
+                        }
                     }
                     if (pxConfig.GROUP_LABEL_SUFFIX === '') {
                         scope.groupLabel = scope.groupLabel || pxConfig.GROUP_LABEL;
                     } else if (!angular.isDefined(scope.groupLabel)) {
                         scope.groupLabel = scope.groupLabel || pxConfig.GROUP_TABLE + '_' + pxConfig.GROUP_LABEL_SUFFIX;
-                        for (var i = 0; i < pxConfig.GROUP_REPLACE.length; i++) {
-                            scope.groupLabel = scope.groupLabel.replace(pxConfig.GROUP_REPLACE[i], '');
-                        };
+                        for (var k = 0; k < pxConfig.GROUP_REPLACE.length; k++) {
+                            scope.groupLabel = scope.groupLabel.replace(pxConfig.GROUP_REPLACE[k], '');
+                        }
                     }
                 }
 
@@ -207,11 +207,11 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     index.width = index.width || '';
                     if (index.align === 'center') {
-                        index.align = 'text-center'
+                        index.align = 'text-center';
                     } else if (index.align === 'right') {
-                        index.align = 'text-right'
+                        index.align = 'text-right';
                     } else {
-                        index.align = 'text-left'
+                        index.align = 'text-left';
                     }
 
                     // Checkbox  - Start
@@ -261,7 +261,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         columnDefs++;
                     }
                     // Edit - End
-                  
+
                     // Verificar se o campo é link
                     if (index.link || index.class) {
                         index.width = '' || '1%';
@@ -303,7 +303,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                             "targets": columnDefs,
                             "visible": false,
                             "render": function(data, type, full, meta) {
-                                return data;                                
+                                return data;
                             }
                         });
                     }
@@ -318,7 +318,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     scope.aoColumns.push(aoColumnsData);
                     i++;
-                    
+
                 });
                 scope.dataTable += scope.columns;
 
@@ -326,7 +326,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                 scope.dataTable += '<tbody></tbody>';
 
-                scope.dataTable += '<tfoot class="tfoot">';                    
+                scope.dataTable += '<tfoot class="tfoot">';
                 scope.dataTable += scope.foot;
                 scope.dataTable += '</tfoot>';
 
@@ -357,28 +357,28 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         dataTableConfig.ajax = {
                             "url": scope.ajaxUrl,
                             "dataSrc": ""
-                        }
+                        };
                     }
                     // Tradução
                     // https://datatables.net/reference/option/language
                     dataTableConfig.language = {
-                            processing: "Processando...",
-                            search: "Filtrar registros carregados",
-                            lengthMenu: "Visualizar _MENU_ registros",
-                            //info: "Monstrando de _START_ a _END_ no total de _TOTAL_ registros.",
-                            info: '_TOTAL_ registros carregados.',
-                            infoEmpty: "Nenhum registro encontrado",
-                            zeroRecords: "Nenhum registro encontrado",
-                            emptyTable: "Nenhum registro encontrado.",
-                            infoFiltered: "",
-                            paginate: {
-                                first: "Primeira",
-                                previous: "« Anterior",
-                                next: "Próxima »",
-                                last: "Última"
-                            }
+                        processing: "Processando...",
+                        search: "Filtrar registros carregados",
+                        lengthMenu: "Visualizar _MENU_ registros",
+                        //info: "Monstrando de _START_ a _END_ no total de _TOTAL_ registros.",
+                        info: '_TOTAL_ registros carregados.',
+                        infoEmpty: "Nenhum registro encontrado",
+                        zeroRecords: "Nenhum registro encontrado",
+                        emptyTable: "Nenhum registro encontrado.",
+                        infoFiltered: "",
+                        paginate: {
+                            first: "Primeira",
+                            previous: "« Anterior",
+                            next: "Próxima »",
+                            last: "Última"
                         }
-                        // Acesso via mobile browser
+                    };
+                    // Acesso via mobile browser
                     if (pxUtil.isMobile()) {
                         dataTableConfig.pagingType = "simple";
                         dataTableConfig.pageLength = 8;
@@ -465,7 +465,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             scope.internalControl.getData = function() {
                 $timeout(function() {
                     scope.getData(0, scope.rowsProcess);
-                }, 0)
+                }, 0);
             };
 
             /**
@@ -603,8 +603,9 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         // Atualizar dataTable (Selecionar tudo)
         $scope.updateDataTableSelectAllCtrl = function(table) {
             // Verifica se o dataTable possui coluna de checkbox
-            if (!$scope.check == true)
+            if ($scope.check !== true) {
                 return;
+            }
 
             var $table = table.table().node();
             var $chkbox_all = $('tbody input[type="checkbox"]', $table);
@@ -642,16 +643,16 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             $scope.internalControl.updatedRow = $row;
             var data = $scope.internalControl.table.row($row).data();
 
-            var itemEdit = {} //angular.copy(JSON.parse($scope.fields))
+            var itemEdit = {}; //angular.copy(JSON.parse($scope.fields))
 
             angular.forEach($scope.fields, function(index) {
-                itemEdit[index.field] = data.edit[index.field]
+                itemEdit[index.field] = data.edit[index.field];
             });
 
             var itemEditEvent = {
                 itemClick: data,
                 itemEdit: itemEdit
-            }
+            };
 
             $scope.itemEdit({
                 event: itemEditEvent
@@ -715,15 +716,15 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             // Dados da linha
             var data = angular.copy($scope.internalControl.table.row($row).data());
             if (columnIndex <= $scope.links.length) {
-                data['link'] = $scope.links[columnIndex];
-                data['linkId'] = $scope.links[columnIndex].linkId;
+                data.link = $scope.links[columnIndex];
+                data.linkId = $scope.links[columnIndex].linkId;
             } else {
                 return;
             }
 
             var itemClickEvent = {
                 itemClick: data,
-            }
+            };
 
             //$timeout(function() {
             $scope.itemClick({
@@ -748,7 +749,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
             var itemClickEvent = {
                 itemClick: data,
-            }
+            };
 
             //$timeout(function() {
             $scope.itemClick({
@@ -779,7 +780,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         // Evento draw
         $('#' + $scope.id + '_pxDataTable').on('draw', function() {
             // Atualizar dataTable (Selecionar tudo)
-            $scope.updateDataTableSelectAllCtrl(table);
+            $scope.updateDataTableSelectAllCtrl($scope.internalControl.table);
         });
 
     };
@@ -899,8 +900,8 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                     }
 
                     // Validar filtro - START
-                    var _element = angular.element($(selectorNameEnd).get(0));
-                    var _ngModelCtrl = _element.data('$ngModelController');
+                    _element = angular.element($(selectorNameEnd).get(0));
+                    _ngModelCtrl = _element.data('$ngModelController');
                     if (angular.isDefined(_ngModelCtrl)) {
                         _ngModelCtrl.$validate();
                         if (!_ngModelCtrl.$valid) {
@@ -972,7 +973,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                     // Neste caso o campo é uma data representanda em números
                     // Ex.: 19900805 - YYYYMMDD
                     if (index.type.toUpperCase() === 'NUMERIC' || index.type.toUpperCase() === 'INT') {
-                        index.filterObject.value = moment(index.filterObject.value).format('YYYYMMDD');;
+                        index.filterObject.value = moment(index.filterObject.value).format('YYYYMMDD');
                         index.filterObject.endValue = moment(index.filterObject.endValue).format('YYYYMMDD');
                     }
 
@@ -991,9 +992,9 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         }
 
         // Dados da consulta
-        var data = {}
+        var data = {};
 
-        data.url = $scope.url
+        data.url = $scope.url;
 
         data.schema = $scope.schema;
         if (angular.isDefined($scope.view) && $scope.view !== '') {
@@ -1066,7 +1067,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
                     //$('#'+$scope.id+'_pxDataTable_info').html('Monstrando de ' + info.start + ' a ' + info.end + ' no total de ' + info.recordsTotal + ' registros carregados.' + '<br>Total de registros na base de dados: ' + $scope.recordCount);                           
 
-                    var infoMessage = info.recordsTotal + ' registros carregados.'
+                    var infoMessage = info.recordsTotal + ' registros carregados.';
 
                     if (angular.isNumber($scope.recordCount)) {
                         infoMessage += ' Total de registros na base de dados: ' + $scope.recordCount;
@@ -1114,14 +1115,14 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             .row($scope.internalControl.updatedRow)
             .data(data)
             .draw();
-    }
+    };
 
     $scope.sortDataBy = function sortDataBy(value) {
         // Ordenar dados do dataTable
         //requirejs(["dataTables"], function() {
         $('#' + $scope.id + '_pxDataTable').DataTable().order(value).draw();
         //});
-    }
+    };
 
     $scope.addDataRow = function addDataRow(value) {
         // Somar currentRecordCount
@@ -1260,7 +1261,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         //$scope.internalControl.table.row.add(data).draw();
         $('#' + $scope.id + '_pxDataTable').DataTable().row.add(data).draw();
         //});
-    }
+    };
 
     /**
      * Remover linha
@@ -1272,7 +1273,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         } else {
             $scope.internalControl.table.rows(value).remove().draw();
         }
-    }
+    };
 
     /**
      * Limpar dados
@@ -1284,7 +1285,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             $('#' + $scope.id + '_pxDataTable').DataTable().clear().draw();
             //});
         }
-    }
+    };
 
     /**
      * Remover itens da listagem
@@ -1299,7 +1300,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             table = $scope.table;
         }
 
-        var data = {}
+        var data = {};
         data.schema = $scope.schema;
         data.table = table;
         data.fields = angular.toJson(arrayFields);
