@@ -138,7 +138,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 							borderColor: '#CCCCCC'
 						});
 					}
-				}
+				};
 			}]
 		};
 	}])
@@ -206,12 +206,12 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 				});
 				scope.value2mask = function(value) {
 					ngModelCtrl.$setViewValue(value);
-				}
+				};
 			},
 			controller: ['$scope', function($scope) {
 				$scope.pxForm2mask = function(value) {
 					$scope.value2mask(value);
-				}
+				};
 			}]
 		};
 	}])
@@ -252,14 +252,13 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 
 				scope.value2mask = function(value) {
 					ngModelCtrl.$setViewValue(value);
-				}
+				};
 
 			},
 			controller: ['$scope', function($scope) {
-
 				$scope.pxForm2mask = function(value) {
 					$scope.value2mask(value);
-				}
+				};
 			}]
 		};
 	}])
@@ -300,14 +299,13 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 
 				scope.value2mask = function(value) {
 					ngModelCtrl.$setViewValue(value);
-				}
+				};
 
 			},
 			controller: ['$scope', function($scope) {
-
 				$scope.pxForm2mask = function(value) {
 					$scope.value2mask(value);
-				}
+				};
 			}]
 		};
 	}])
@@ -487,13 +485,13 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 
 				scope.value2mask = function(value) {
 					ngModelCtrl.$setViewValue(scope.cleanValue);
-				}
+				};
 
 			},
 			controller: ['$scope', function($scope) {
 				$scope.pxForm2mask = function(value) {
 					$scope.value2mask(value);
-				}
+				};
 			}]
 		};
 	}])
@@ -679,7 +677,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 					if (_ngModelCtrl) {
 						_ngModelCtrl.$setValidity('required', true);
 					}
-				}, 0)
+				}, 0);
 			}
 		};
 	}])
@@ -767,7 +765,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 
 				scope.groupSearchControl = {};
 
-				scope.groupSearchClick = function() {
+				scope.groupSearchClick = function(event) {
 					if (scope.templateUrl && scope.templateUrl !== '') {
 						$mdDialog.show({
 							scope: scope,
@@ -783,14 +781,14 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 							event: event
 						});
 					}
-				}
+				};
 
 				scope.groupSearchChange = function(event) {
 					scope.internalControl.selectedItem = scope.groupSearchControl.selectedItem;
 					scope.change({
 						event: event
 					});
-				}
+				};
 
 				groupSearchCtrl.$inject = ['$scope', '$mdDialog'];
 
@@ -914,9 +912,9 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 					}
 
 					if (scope.dependencies) {
-						for (var i = 0; i < scope.dependencies.length; i++) {
-							var result = pxUtil.getFieldValueObject(scope.dependencies[i]);
-							result.element.on('blur', function(event) {
+						for (var j = 0; j < scope.dependencies.length; j++) {
+							var result = pxUtil.getFieldValueObject(scope.dependencies[j]);
+							result.element.on('blur', function(event) { // jshint ignore:line
 								var result = pxUtil.getFieldValueObject({
 									filter: $(this).attr('id')
 								});
@@ -926,7 +924,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 								}
 								element.scope().oldValue = angular.copy(result.value); //angular.copy(element.scope().selectedItem);                                    
 							});
-						};
+						}
 					}
 				}, 0);
 
@@ -973,7 +971,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 							});
 						}
 					}
-				}
+				};
 
 				var isNewSearchNeeded = function(newTerm, oldTerm) {
 					return newTerm.length >= scope.minLength && newTerm !== oldTerm;
@@ -1066,7 +1064,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 							params.fields = angular.toJson(arrayFields);
 							params.orderBy = scope.orderBy;
 							// Definir filterObject para os campos do scope.where
-							scope.where = pxUtil.setFilterObject(scope.where, false, scope.table)
+							scope.where = pxUtil.setFilterObject(scope.where, false, scope.table);
 							params.where = angular.toJson(scope.where);
 
 							if (!angular.isDefined(scope.recordCount) || scope.recordCount === '') {
@@ -1158,8 +1156,11 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 					scope.results = [];
 					//scope.$apply();
 					scope.setValidity();
+					var eventObject = {
+						result: result
+					};
 					scope.change({
-						event: event
+						event: eventObject
 					});
 				};
 
@@ -1230,16 +1231,17 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 								scope.setValidity();
 								return true;
 							}
-						};
+						}
 					}
 					ngModelCtrl.$setValidity('deps', true);
 					return false;
 				};
 
 				$timeout(function() {
-					if (angular.isDefined(scope.default) && !angular.isDefined(scope.selectedItem))
+					if (angular.isDefined(scope.default) && !angular.isDefined(scope.selectedItem)) {
 						scope.setValue(scope.default);
-				}, 0)
+					}
+				}, 0);
 
 			},
 			controller: ['$scope', '$timeout', function($scope, $timeout) {
@@ -1248,8 +1250,8 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 					$scope.default = data;
 					$timeout(function() {
 						$scope.oldValue = data[$scope.fields[pxArrayUtil.getIndexByProperty($scope.fields, 'labelField', true)].field];
-					}, 0)
-				}
+					}, 0);
+				};
 
 				$scope.setValue = function(data) {
 					var arrayFields = $scope.fields;

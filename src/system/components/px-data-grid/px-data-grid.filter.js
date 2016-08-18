@@ -8,5 +8,5 @@ angular.module('px-data-grid.filter', [])
 			} else {
 				return 'fa fa-refresh';
 			}
-		}
+		};
 	}]);

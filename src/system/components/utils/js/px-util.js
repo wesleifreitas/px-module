@@ -203,7 +203,7 @@ function pxUtil(pxConfig) {
          */
         function getGroupConfig(table) {
             var group = {};
-            var table = table || pxConfig.GROUP_TABLE;
+            table = table || pxConfig.GROUP_TABLE;
             if (pxConfig.GROUP_SUFFIX === '') {
                 group.item = pxConfig.GROUP_ITEM;
                 group.label = pxConfig.GROUP_LABEL;
@@ -213,7 +213,7 @@ function pxUtil(pxConfig) {
                 for (var i = 0; i < pxConfig.GROUP_REPLACE.length; i++) {
                     group.item = group.item.replace(pxConfig.GROUP_REPLACE[i], '');
                     group.label = group.label.replace(pxConfig.GROUP_REPLACE[i], '');
-                };
+                }
             }
             return group;
         }
@@ -222,8 +222,8 @@ function pxUtil(pxConfig) {
          * @return {Boolean}
          */
         function isMobile() {
-            var userAgent = navigator.userAgent.toLowerCase();
-            if (userAgent.search(/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i) != -1) {
+            var userAgent = navigator.userAgent.toLowerCase(); // jshint ignore:line
+            if (userAgent.search(/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i) !== -1) {
                 return true;
             } else {
                 return false;

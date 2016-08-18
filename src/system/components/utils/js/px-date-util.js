@@ -8,13 +8,13 @@ function pxDateUtil() {
     var service = {};
     // Verificar se moment não está definido e se require está definido
     if (typeof moment === 'undefined' && typeof require !== 'undefined') {
-        service.moment = require('moment')
+        service.moment = require('moment');
     } else if (typeof moment === 'function') {
         service.moment = moment;
     } else {
         service.moment = function() {
             console.error('pxDateUtil:', 'moment.js não importada');
-        }
+        };
     }
 
     service.dateAdd = dateAdd;
@@ -93,7 +93,7 @@ function pxDateUtil() {
                 name: moment.months()[i],
                 id: i
             });
-        };
+        }
 
         return arrayData;
     }

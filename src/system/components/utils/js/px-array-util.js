@@ -53,10 +53,10 @@ function pxArrayUtil() {
      */
     function getIndexByProperty(array, property, value) {
         for (var i = array.length - 1; i >= 0; i--) {
-            if (array[i][property] == value) {
+            if (array[i][property] === value) {
                 return i;
             }
-        };
+        }
         return -1;
     }
 }

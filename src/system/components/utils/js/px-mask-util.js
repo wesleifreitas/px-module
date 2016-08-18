@@ -78,15 +78,21 @@ function pxMaskUtil() {
     }
 
     function concatChar(text, character, options, token) {
-        if (token && typeof token.transform === 'function') character = token.transform(character);
-        if (options.reverse) return character + text;
+        if (token && typeof token.transform === 'function') {
+            character = token.transform(character);
+        }
+        if (options.reverse) {
+            return character + text;
+        }
         return text + character;
     }
 
     function hasMoreTokens(pattern, pos, inc) {
         var pc = pattern.charAt(pos);
         var token = tokens[pc];
-        if (pc === '') return false;
+        if (pc === '') {
+            return false;
+        }
         return token && !token.escape ? true : hasMoreTokens(pattern, pos + inc, inc);
     }
 
@@ -163,7 +169,9 @@ function pxMaskUtil() {
             if (!inRecursiveMode && token && token.recursive) {
                 recursive.push(pc);
             } else if (inRecursiveMode && !vc) {
-                if (!token || !token.recursive) formatted = concatChar(formatted, pc, options, token);
+                if (!token || !token.recursive) {
+                    formatted = concatChar(formatted, pc, options, token);
+                }
                 continue;
             } else if (recursive.length > 0 && token && !token.recursive) {
                 // Recursive tokens most be the last tokens of the pattern
@@ -202,5 +210,5 @@ function pxMaskUtil() {
             result: formatted,
             valid: valid
         };
-    };
+    }
 }
