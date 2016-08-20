@@ -685,7 +685,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 		};
 	}])
 	// pxMessages
-	// Chamar função ao teclar Enter
+	// Apresentar mensagens de erro
 	.directive('pxMessage', [function() {
 		return {
 			restrict: 'E',
@@ -704,7 +704,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 				scope.messages.required = scope.messagesCustom.required || 'Campo obrigatório.';
 				scope.messages.email = scope.messagesCustom.email || 'E-mail inválido.';
 				scope.messages.minlength = scope.messagesCustom.minlength || 'Muito curto.';
-				scope.messages.maxlength = scope.messagesCustom.maxlength || 'Muito logon.';
+				scope.messages.maxlength = scope.messagesCustom.maxlength || 'Muito longo.';
 			}
 		};
 	}])
@@ -1959,6 +1959,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 			}]
 		};
 	}]);
+
 angular.module('px-data-grid.filter', [])
 	.filter('dataGridRefresh', [function() {
 		return function(working) {
