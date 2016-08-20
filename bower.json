@@ -1,42 +1,42 @@
 {
-  "name": "px-module",
-  "version": "0.0.0",
-  "homepage": "https://github.com/wesleifreitas/px-module",
-  "authors": [
-    "Weslei Freitas <weslei.rfreitas@gmail.com>"
-  ],
-  "description": "Phoenix Project",
-  "main": "./dist/px-module.js",
-  "moduleType": [
-    "amd",
-    "globals"
-  ],
-  "keywords": [
-    "px-module"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests",
-    "docs",
-    "src"
-  ],
-  "dependencies": {
-    "angular": "~1.5.7",
-    "angular-i18n": "~1.5.7",
-    "angular-messages": "~1.5.8",
-    "angular-ui-mask": "~1.8.6",
-    "bootstrap": "~3.3.6",
-    "datatables": "~1.10.12",
-    "font-awesome": "~4.6.3",
-    "jquery": "~3.1.0",
-    "moment": "~2.14.1",
-    "numeral": "~1.5.3"       
-  },
-  "resolutions": {
-    "jquery": "~3"
-  }
+    "name": "px-module",
+    "version": "0.0.0",
+    "homepage": "https://github.com/wesleifreitas/px-module",
+    "authors": [
+        "Weslei Freitas <weslei.rfreitas@gmail.com>"
+    ],
+    "description": "Phoenix Project",
+    "main": "./dist/px-module.js",
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "keywords": [
+        "px-module"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests",
+        "docs",
+        "src"
+    ],
+    "dependencies": {
+        "angular": "~1",
+        "angular-i18n": "~1",
+        "angular-messages": "~1",
+        "angular-ui-mask": "~1",
+        "bootstrap": "~3",
+        "datatables": "~1",
+        "font-awesome": "~4",
+        "jquery": "~3",
+        "moment": "~2",
+        "numeral": "~1"
+    },
+    "resolutions": {
+        "jquery": "~3"
+    }
 }
