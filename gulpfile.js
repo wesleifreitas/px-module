@@ -90,6 +90,22 @@ gulp.task('release-px-form-item-js', function() {
 		.pipe(gulp.dest('dist/px-form-item'));
 });
 
+gulp.task('build-px-form-item-css', function() {
+	return gulp
+		.src(['./src/system/components/px-data-grid/*.css'])
+		.pipe(gulp.dest('dist/px-data-grid'));
+});
+
+gulp.task('release-px-form-item-css', function() {
+	return gulp
+		.src(['./src/system/components/px-form-item/*.css'])
+		.pipe(cssmin())
+		.pipe(rename({
+			suffix: '.min'
+		}))
+		.pipe(gulp.dest('dist/px-form-item'));
+});
+
 gulp.task('build-px-data-grid-js', function() {
 	return gulp
 		.src(['./src/system/components/px-data-grid/*.js'])
@@ -151,7 +167,8 @@ gulp.task('build-px-full-js', function() {
 
 gulp.task('build-px-full-css', function() {
 	return gulp
-		.src(['./src/system/components/px-data-grid/*.css'])
+		.src(['./src/system/components/px-data-grid/*.css',
+			'./src/system/components/px-form-item/*.css'])
 		.pipe(concat('px-full.css'))
 		.pipe(gulp.dest('dist/px-full'));
 });
@@ -188,6 +205,7 @@ gulp.task('default', [
 	'build-px-form-item-js',
 	'build-px-data-grid-js',
 	'build-px-data-grid-css',
+	'build-px-form-item-css',
 	'build-px-data-grid-fonts',
 	'build-px-full-js',
 	'build-px-full-css'
@@ -200,6 +218,7 @@ gulp.task('release', [
 	'release-px-form-item-js',
 	'release-px-data-grid-js',
 	'release-px-data-grid-css',
+	'release-px-form-item-css',
 	'release-px-full-js',
 	'release-px-full-css'
 ]);
@@ -210,4 +229,5 @@ gulp.task('watch', function() {
 	gulp.watch('./src/system/components/px-form-item/*.js', ['build-px-form-item-js']);
 	gulp.watch('./src/system/components/px-data-grid/*.js', ['build-px-data-grid-js']);
 	gulp.watch('./src/system/components/px-data-grid/*.css', ['build-px-data-grid-css']);
+	gulp.watch('./src/system/components/px-form-item/*.css', ['build-px-form-item-css']);
 });
