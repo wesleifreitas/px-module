@@ -190,7 +190,8 @@ gulp.task('release-px-full-js', function() {
 
 gulp.task('release-px-full-css', function() {
 	return gulp
-		.src(['./src/system/components/px-data-grid/*.css'])
+		.src(['./src/system/components/px-data-grid/*.css',
+			'./src/system/components/px-form-item/*.css'])
 		.pipe(concat('px-full.css'))
 		.pipe(cssmin())
 		.pipe(rename({
