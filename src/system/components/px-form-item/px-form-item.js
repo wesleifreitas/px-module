@@ -707,7 +707,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 				for: '@for',
 				change: '&pxChange'
 			},
-			templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-group.html',
+			templateUrl: pxConfig.PX_PACKAGE + 'system/directives/px-form-item/px-group.html',
 			link: function(scope, element, attrs, ngModelCtrl) {
 				if ($rootScope.globals.currentUser.per_developer !== 1) {
 					element.hide();
@@ -842,7 +842,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 				dependencies: '@pxDependencies'
 			},
 			require: '?ngModel',
-			templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-input-search.html',
+			templateUrl: pxConfig.PX_PACKAGE + 'system/directives/px-form-item/px-input-search.html',
 			link: function(scope, element, attrs, ngModelCtrl) {
 
 				if (!ngModelCtrl) {
@@ -1074,7 +1074,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 							params.rows = scope.recordCount;
 
 							if (!angular.isDefined(scope.url) || scope.url === '') {
-								scope.url = pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-form-item.cfc?method=getData';
+								scope.url = pxConfig.PX_PACKAGE + 'system/directives/px-form-item/px-form-item.cfc?method=getData';
 							}
 
 							$http({
