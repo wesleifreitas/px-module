@@ -408,11 +408,11 @@ function pxStringUtil() {
     }
 
     /**
-     * Calcular a representação binária dos dados codificados em Base64 ou de um documento PDF.
-     * @param  {String} data        [description]
-     * @param  {String} contentType [description]
-     * @param  {Number} sliceSize   [description]
-     * @return {String}             Representação binária dos dados .
+     * Calcular a representação binária dos dados codificados em Base64 ou de um documento PDF
+     * @param  {String} data        dados codificado em Base64
+     * @param  {String} contentType natureza do arquivo. http://www.freeformatter.com/mime-types-list.html
+     * @param  {Number} sliceSize   tamanho
+     * @return {String}             Representação binária dos dados
      */
     function toBinary(data, contentType, sliceSize) {
         contentType = contentType || '';

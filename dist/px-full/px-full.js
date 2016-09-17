@@ -438,11 +438,11 @@ function pxStringUtil() {
     }
 
     /**
-     * Calcular a representação binária dos dados codificados em Base64 ou de um documento PDF.
-     * @param  {String} data        [description]
-     * @param  {String} contentType [description]
-     * @param  {Number} sliceSize   [description]
-     * @return {String}             Representação binária dos dados .
+     * Calcular a representação binária dos dados codificados em Base64 ou de um documento PDF
+     * @param  {String} data        dados codificado em Base64
+     * @param  {String} contentType natureza do arquivo. http://www.freeformatter.com/mime-types-list.html
+     * @param  {Number} sliceSize   tamanho
+     * @return {String}             Representação binária dos dados
      */
     function toBinary(data, contentType, sliceSize) {
         contentType = contentType || '';
@@ -1411,7 +1411,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 				for: '@for',
 				change: '&pxChange'
 			},
-			templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-group.html',
+			templateUrl: pxConfig.PX_PACKAGE + 'system/directives/px-form-item/px-group.html',
 			link: function(scope, element, attrs, ngModelCtrl) {
 				if ($rootScope.globals.currentUser.per_developer !== 1) {
 					element.hide();
@@ -1546,7 +1546,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 				dependencies: '@pxDependencies'
 			},
 			require: '?ngModel',
-			templateUrl: pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-input-search.html',
+			templateUrl: pxConfig.PX_PACKAGE + 'system/directives/px-form-item/px-input-search.html',
 			link: function(scope, element, attrs, ngModelCtrl) {
 
 				if (!ngModelCtrl) {
@@ -1778,7 +1778,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 							params.rows = scope.recordCount;
 
 							if (!angular.isDefined(scope.url) || scope.url === '') {
-								scope.url = pxConfig.PX_PACKAGE + 'system/components/px-form-item/px-form-item.cfc?method=getData';
+								scope.url = pxConfig.PX_PACKAGE + 'system/directives/px-form-item/px-form-item.cfc?method=getData';
 							}
 
 							$http({
@@ -2196,7 +2196,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                 var aoColumnsData = {};
                 var columnDefs = 0;
                 scope.columnDefs = [];
-                scope.links = [];
+                scope.links = {};
 
                 angular.forEach(scope.fields, function(index) {
 
@@ -2260,7 +2260,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     // Verificar se o campo é link
                     if (index.link || index.class) {
                         index.width = '' || '1%';
-                        scope.links.push(index);
+                        scope.links[columnDefs] = index;
                         scope.columnDefs.push({
                             "mData": index.linkId,
                             "targets": columnDefs,
@@ -2700,17 +2700,19 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             var $row = $(this).closest('td');
 
             var index = $row.index();
-            var columnIndex = $scope.internalControl.table.column.index('fromData', index);
+            var columnIndex = $scope.internalControl.table.column.index('fromVisible', index);
+            /*
             if ($scope.edit === true) {
                 columnIndex--;
             }
             if ($scope.check === true) {
                 columnIndex--;
             }
+            */
 
             // Dados da linha
             var data = angular.copy($scope.internalControl.table.row($row).data());
-            if (columnIndex <= $scope.links.length) {
+            if ($scope.links[columnIndex]) {
                 data.link = $scope.links[columnIndex];
                 data.linkId = $scope.links[columnIndex].linkId;
             } else {

@@ -201,7 +201,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                 var aoColumnsData = {};
                 var columnDefs = 0;
                 scope.columnDefs = [];
-                scope.links = [];
+                scope.links = {};
 
                 angular.forEach(scope.fields, function(index) {
 
@@ -265,7 +265,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     // Verificar se o campo é link
                     if (index.link || index.class) {
                         index.width = '' || '1%';
-                        scope.links.push(index);
+                        scope.links[columnDefs] = index;
                         scope.columnDefs.push({
                             "mData": index.linkId,
                             "targets": columnDefs,
@@ -705,17 +705,19 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             var $row = $(this).closest('td');
 
             var index = $row.index();
-            var columnIndex = $scope.internalControl.table.column.index('fromData', index);
+            var columnIndex = $scope.internalControl.table.column.index('fromVisible', index);
+            /*
             if ($scope.edit === true) {
                 columnIndex--;
             }
             if ($scope.check === true) {
                 columnIndex--;
             }
+            */
 
             // Dados da linha
             var data = angular.copy($scope.internalControl.table.row($row).data());
-            if (columnIndex <= $scope.links.length) {
+            if ($scope.links[columnIndex]) {
                 data.link = $scope.links[columnIndex];
                 data.linkId = $scope.links[columnIndex].linkId;
             } else {
