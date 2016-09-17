@@ -428,8 +428,9 @@ function pxStringUtil() {
      * @return {String}          string preenchida
      */
     function pad(pad, str, padLeft) {
-        if (typeof str === 'undefined')
+        if (typeof str === 'undefined') {
             return pad;
+        }
         if (padLeft) {
             return (pad + str).slice(-pad.length);
         } else {
@@ -448,7 +449,8 @@ function pxStringUtil() {
         contentType = contentType || '';
         sliceSize = sliceSize || 512;
 
-        var byteCharacters = atob(data);
+        /* jshint ignore:start */
+        var byteCharacters = atob(data); // 
         var byteArrays = [];
 
         for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -466,8 +468,9 @@ function pxStringUtil() {
 
         var blob = new Blob(byteArrays, {
             type: contentType
-        });
+        });        
         return blob;
+        /* jshint ignore:end */
     }
 }
 angular.module('px-util', [])
