@@ -420,7 +420,7 @@ function pxStringUtil() {
         sliceSize = sliceSize || 512;
 
         /* jshint ignore:start */
-        var byteCharacters = atob(data); // 
+        var byteCharacters = atob(data);
         var byteArrays = [];
 
         for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
@@ -438,7 +438,7 @@ function pxStringUtil() {
 
         var blob = new Blob(byteArrays, {
             type: contentType
-        });        
+        });
         return blob;
         /* jshint ignore:end */
     }
