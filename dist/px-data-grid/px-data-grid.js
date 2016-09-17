@@ -1146,8 +1146,6 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
             if (typeof item.field !== 'undefined') {
 
-                data.value[item.field] = angular.copy(value[item.field]);
-
                 if (!angular.isDefined(value[item.field])) {
                     // Dados por campo
                     data[item.field] = value[item.field.toUpperCase()];
@@ -1155,6 +1153,8 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                     // Dados por campo
                     data[item.field] = value[item.field];
                 }
+
+                data.value[item.field] = angular.copy(data[item.field]);
 
                 if (!angular.isDefined(data[item.field])) {
                     data[item.field] = '';
