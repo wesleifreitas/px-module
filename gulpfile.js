@@ -92,8 +92,8 @@ gulp.task('release-px-form-item-js', function() {
 
 gulp.task('build-px-form-item-css', function() {
 	return gulp
-		.src(['./src/system/components/px-data-grid/*.css'])
-		.pipe(gulp.dest('dist/px-data-grid'));
+		.src(['./src/system/components/px-form-item/*.css'])
+		.pipe(gulp.dest('dist/px-form-item'));
 });
 
 gulp.task('release-px-form-item-css', function() {
