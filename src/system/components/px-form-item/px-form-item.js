@@ -716,9 +716,6 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 					}
 				}
 
-				// Tabela (SQL)
-				//scope.table = pxConfig.GROUP_TABLE;
-
 				// Configuração do input-search
 				if (pxConfig.GROUP_ITEM === '' && pxConfig.GROUP_LABEL === '') {
 					scope.groupSearchConfig = {
@@ -737,6 +734,7 @@ angular.module('px-form-item', ['ngMessages', 'ui.mask'])
 					};
 				} else {
 					scope.groupSearchConfig = {
+						table: pxConfig.GROUP_TABLE,
 						fields: [{
 							title: '',
 							labelField: true,
