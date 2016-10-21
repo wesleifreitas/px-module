@@ -103,7 +103,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     return;
                 }
 
-                scope.url = newValue.url || '';
+                scope.url = newValue.url || '';         
+                scope.method = newValue.method;
                 scope.fields = newValue.fields;
 
                 scope.dataTable = '';
@@ -985,6 +986,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         var data = {};
 
         data.url = $scope.url;
+        data.method = $scope.method;
 
         data.schema = $scope.schema;
         if (angular.isDefined($scope.view) && $scope.view !== '') {
@@ -1034,9 +1036,9 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 alert('Ops! Ocorreu um erro inesperado.\nPor favor contate o administrador do sistema!');
             } else {
                 // Verifica se a quantidade de registros é maior que 0
-                if (response.data.qQuery.length > 0) {
+                if (response.data.query.length > 0) {
                     // Loop na query
-                    angular.forEach(response.data.qQuery, function(index) {
+                    angular.forEach(response.data.query, function(index) {
                         $scope.addDataRow(index);
                     });
 
@@ -1291,7 +1293,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         }
 
         var data = {};
-        data.schema = $scope.schema;
+        data.schema = $scope.schema;        
         data.table = table;
         data.fields = angular.toJson(arrayFields);
         data.selectedItems = angular.toJson($scope.internalControl.selectedItems);

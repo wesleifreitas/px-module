@@ -12,9 +12,9 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
     return service;
 
     function select(data, callback) {
-
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
+        data.method = data.method || 'POST'; 
 
         if (data.url === '') {
             data.url = '../../../rest/px-project/system/px-data-grid/getData';
@@ -43,7 +43,7 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
         }
 
         $http({
-            method: 'POST',
+            method: data.method,
             url: data.url,
             data: data
         }).then(function successCallback(response) {

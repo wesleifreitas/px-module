@@ -25,7 +25,9 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      * @type {Object}
      */
     $scope.dgExemploConfig = {
-        url: 'data.json',
+        //url: 'data.json',
+        url: 'http://localhost:8080/api/users/0/250',
+        method: 'GET',
         fields: [{
             link: true,
             linkId: 'sampleIcon',
@@ -35,8 +37,8 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
             value: '',
             align: 'center'
         }, {
-            title: 'Nº',
-            field: 'id',
+            title: 'ID',
+            field: '_id',
             type: 'int'
         }, {
             title: 'Nome',
@@ -57,13 +59,13 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
             icon: '',
             title: 'Label Function',
             field: 'bateria',
-            type: 'numeric',
+            type: 'int',
             label: 'bateria',
             align: 'center'
         }, {
             title: 'Status',
             field: 'status',
-            type: 'numeric',
+            type: 'int',
             label: 'status',
             align: 'center'
         }]
