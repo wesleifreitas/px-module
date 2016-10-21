@@ -567,7 +567,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             if ($scope.ajaxUrl || $scope.url === '') {
                 $scope.internalControl.table.context[0].oLanguage.sInfo = info.recordsTotal + ' registros carregados.';
             } else {
-                if (angular.isNumber($scope.nextRowFrom)) {
+                if (!angular.isNumber($scope.nextRowFrom)) {
                     return;
                 }
 
