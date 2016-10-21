@@ -26,7 +26,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      */
     $scope.dgExemploConfig = {
         //url: 'data.json',
-        url: 'http://localhost:8080/api/users/0/250',
+        url: 'http://localhost:8080/api/users/',
         method: 'GET',
         fields: [{
             link: true,
@@ -92,7 +92,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
     $scope.countRow = 105;
     $scope.addDataRow = function() {
         $scope.dgExemploControl.addDataRow({
-            'id': $scope.countRow++,
+            '_id': generateUUID(),
             'nome': 'Nome ' + Math.floor((Math.random() * 100000) + 1),
             'cpf': Math.floor((Math.random() * 10000000000) + 1000000000),
             'data': new Date(),
@@ -120,4 +120,14 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
         // Recuperar dados
         $scope.dgExemploControl.getData();
     }
+
+    function generateUUID() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    };
 }]);

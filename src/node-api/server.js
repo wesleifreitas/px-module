@@ -60,9 +60,9 @@ router.get('/', function(req, res) {
 router.route('/dataGenerator')
 
 .post(function(req, res) {
-	for (var i = 1000 - 1; i >= 0; i--) {
+	for (var i = 1; i <= 1000; i++) {
 		var user = new User();
-		user.nome = 'Nome ' + Math.floor((Math.random() * 100000) + 1);
+		user.nome = 'Nome ' + i;
 		user.cpf = Math.floor((Math.random() * 10000000000) + 1000000000);
 		user.data = new Date();
 		user.bateria = Math.floor((Math.random() * 4) + 1);
@@ -81,7 +81,7 @@ router.route('/dataGenerator')
 
 // on routes that end in /users
 // ----------------------------------------------------
-router.route('/users/:rowFrom/:rowTo')
+router.route('/users/')
 
 // create a user (accessed at POST http://localhost:8080/users)
 .post(function(req, res) {
@@ -116,10 +116,8 @@ router.route('/users/:rowFrom/:rowTo')
 		recordCount = count;
 	});
 
-	var rowFrom = parseInt(req.params.rowFrom) || 0;
-	var rowTo = parseInt(req.params.rowTo) || recordCount;
-
-	console.info('req.body', req.body);
+	var rowFrom = parseInt(req.query.rowFrom) || 0;
+	var rowTo = parseInt(req.query.rowTo) || recordCount;
 
 	User.find(function(err, users) {
 		if (err)
@@ -133,6 +131,8 @@ router.route('/users/:rowFrom/:rowTo')
 		}
 
 		res.json(response);
+	}).sort({
+		nome: 1
 	}).skip(rowFrom).limit(rowTo);
 });
 
