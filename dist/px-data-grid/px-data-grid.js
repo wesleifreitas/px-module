@@ -115,7 +115,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     return;
                 }
 
-                scope.url = newValue.url || '';
+                scope.url = newValue.url || '';         
+                scope.method = newValue.method;
                 scope.fields = newValue.fields;
 
                 scope.dataTable = '';
@@ -578,7 +579,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             if ($scope.ajaxUrl || $scope.url === '') {
                 $scope.internalControl.table.context[0].oLanguage.sInfo = info.recordsTotal + ' registros carregados.';
             } else {
-                if (angular.isNumber($scope.nextRowFrom)) {
+                if (!angular.isNumber($scope.nextRowFrom)) {
                     return;
                 }
 
@@ -997,6 +998,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         var data = {};
 
         data.url = $scope.url;
+        data.method = $scope.method;
 
         data.schema = $scope.schema;
         if (angular.isDefined($scope.view) && $scope.view !== '') {
@@ -1046,9 +1048,9 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 alert('Ops! Ocorreu um erro inesperado.\nPor favor contate o administrador do sistema!');
             } else {
                 // Verifica se a quantidade de registros é maior que 0
-                if (response.data.qQuery.length > 0) {
+                if (response.data.query.length > 0) {
                     // Loop na query
-                    angular.forEach(response.data.qQuery, function(index) {
+                    angular.forEach(response.data.query, function(index) {
                         $scope.addDataRow(index);
                     });
 
@@ -1303,7 +1305,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         }
 
         var data = {};
-        data.schema = $scope.schema;
+        data.schema = $scope.schema;        
         data.table = table;
         data.fields = angular.toJson(arrayFields);
         data.selectedItems = angular.toJson($scope.internalControl.selectedItems);
@@ -1348,9 +1350,9 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
     return service;
 
     function select(data, callback) {
-
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
+        data.method = data.method || 'POST'; 
 
         if (data.url === '') {
             data.url = '../../../rest/px-project/system/px-data-grid/getData';
@@ -1379,7 +1381,7 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
         }
 
         $http({
-            method: 'POST',
+            method: data.method,
             url: data.url,
             data: data
         }).then(function successCallback(response) {
