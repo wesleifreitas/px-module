@@ -2109,8 +2109,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     // a listagem não será construida.
                     return;
                 }
-
-                scope.url = newValue.url || '';         
+                scope.url = newValue.url || '';
+                scope.paging = newValue.paging;
                 scope.method = newValue.method;
                 scope.fields = newValue.fields;
 
@@ -2379,6 +2379,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         dataTableConfig.pagingType = "simple";
                         dataTableConfig.pageLength = 8;
                     }
+                    dataTableConfig.paging = scope.paging;
                     dataTableConfig.bFilter = true;
                     dataTableConfig.bLengthChange = scope.lengthChange;
                     dataTableConfig.lengthMenu = scope.lengthMenu; //[20, 35, 45];
