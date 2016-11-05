@@ -1,3 +1,4 @@
 node_modules
 demo/lib
 src/node-api/node_modules
+.vscode
