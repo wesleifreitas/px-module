@@ -3151,12 +3151,11 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                     data[item.field] = value[item.field];
                 }
 
-                data.value[item.field] = angular.copy(data[item.field]);
-
                 if (!angular.isDefined(data[item.field])) {
                     data[item.field] = '';
                 }
 
+                data.value = value;
                 data.edit[item.field] = angular.copy(data[item.field]);
 
                 // Se possuir máscara
