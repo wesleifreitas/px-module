@@ -117,9 +117,14 @@ router.route('/users/')
 	});
 
 	var rowFrom = parseInt(req.query.rowFrom) || 0;
-	var rowTo = parseInt(req.query.rowTo) || recordCount;
+	var rowTo = 100;
 
-	User.find(function(err, users) {
+	var where = {};
+	if(req.query.nome){
+		where.nome = req.query.nome;
+	}
+
+	User.find(where, function(err, users) {
 		if (err)
 			res.send(err);
 
@@ -127,7 +132,8 @@ router.route('/users/')
 			recordCount: recordCount,
 			rowFrom: rowFrom,
 			rowTo: rowTo,
-			query: users
+			query: users,
+			params: req.query
 		}
 
 		res.json(response);

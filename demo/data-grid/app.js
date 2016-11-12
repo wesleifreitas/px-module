@@ -86,7 +86,12 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
     };
 
     $scope.getData = function() {
-        $scope.dgExemploControl.getData();
+        var params = {}
+        if ($scope.filter.nome !== '') {
+            params.nome = $scope.filter.nome
+        }
+
+        $scope.dgExemploControl.getData(params);
     };
 
     $scope.countRow = 105;
@@ -117,6 +122,9 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      * @return {Void}
      */
     $scope.dgExemploInit = function(event) {
+        $scope.filter = {
+            nome: ''
+        };
         // Recuperar dados
         $scope.dgExemploControl.getData();
     }

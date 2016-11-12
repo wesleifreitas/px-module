@@ -452,9 +452,10 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
              * Recuperar dados que são carregados na listagem
              * @return {void}
              */
-            scope.internalControl.getData = function() {
+            scope.internalControl.getData = function(params) {
+                scope.params = params;
                 $timeout(function() {
-                    scope.getData(0, scope.rowsProcess);
+                    scope.getData(0, scope.rowsProcess, scope.params);
                 }, 0);
             };
 
@@ -575,7 +576,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 if (info.page === info.pages - 1) {
                     $scope.currentPage = info.page;
                     if ($scope.demand) {
-                        $scope.getData($scope.nextRowFrom, $scope.nextRowTo);
+                        $scope.getData($scope.nextRowFrom, $scope.nextRowTo, $scope.params);
                     }
                 }
 
@@ -783,7 +784,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
      * @param  {number} rowTo   linha final
      * @return {void}
      */
-    $scope.getData = function(rowFrom, rowTo) {
+    $scope.getData = function(rowFrom, rowTo, params) {
         // Verificar se a listagem está em processamento
         if ($scope.internalControl.working) {
             return;
@@ -988,6 +989,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
         data.url = $scope.url;
         data.method = $scope.method;
+        data.params = $scope.params;
 
         data.schema = $scope.schema;
         if (angular.isDefined($scope.view) && $scope.view !== '') {
@@ -1293,7 +1295,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         }
 
         var data = {};
-        data.schema = $scope.schema;        
+        data.schema = $scope.schema;
         data.table = table;
         data.fields = angular.toJson(arrayFields);
         data.selectedItems = angular.toJson($scope.internalControl.selectedItems);

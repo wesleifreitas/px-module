@@ -11,7 +11,7 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
 
     return service;
 
-    function select(data, callback) {
+    function select(data, callback) {        
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
         data.method = data.method || 'POST';
@@ -42,10 +42,15 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
             data.where = '';
         }
 
+        data.params = data.params || {};
+        data.params.rowFrom = data.rowFrom;
+        data.params.rowTo = data.rowTo;
+
         $http({
             method: data.method,
-            url: data.url + '?rowFrom=' + data.rowFrom + '&rowTo=' + data.rowTo,
-            data: data
+            url: data.url,
+            data: data,
+            params: data.params
         }).then(function successCallback(response) {
             callback(response);
         }, function errorCallback(response) {

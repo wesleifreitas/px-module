@@ -7,7 +7,7 @@
     <!-- css -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">    
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../../dist/px-data-grid/px-data-grid.css">
     <!-- data-grid dependencies -->
     <script src="../lib/angular/angular.min.js"></script>
@@ -18,7 +18,7 @@
     <script src="../lib/numeral/min/languages.min.js"></script>
     <script src="../lib/jquery/dist/jquery.min.js"></script>
     <script src="../lib/datatables/media/js/jquery.dataTables.min.js"></script>
-    <!-- px-config -->    
+    <!-- px-config -->
     <script src="../../dist/px-config/px-config.js"></script>
     <!-- px-util -->
     <script src="../../dist/px-util/px-util.js"></script>
@@ -35,15 +35,22 @@
                 <small><a href="https://github.com/wesleifreitas/px-module" target="_blank">GitHub</a></small>
             </h1>
         </div>
-        <div class="row pull-right">
-            <div class="col-md-12">
-                <button class="btn btn-default" ng-click="getData()">Listar</button>
-                <button class="btn btn-default" ng-click="addDataRow()">Adicionar</button>
-                <button class="btn btn-default" ng-click="removeRow()">Remover</button>
+        <div class="row">
+            <div class="col-md-4">
+                <input ng-model="filter.nome" class="form-control" placeholder="Pesquise pelo nome">
+            </div>
+            <div class="col-md-8">
+                <div class="row pull-right">
+                    <div class="col-md-12">
+                    <button class="btn btn-default" ng-click="getData()">Listar</button>
+                    <button class="btn btn-default" ng-click="addDataRow()">Adicionar</button>
+                    <button class="btn btn-default" ng-click="removeRow()">Remover</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">                
+            <div class="col-md-12">
                 <px-data-grid id="dgExemplo" class="table-striped table-bordered" px-debug="true" px-control="dgExemploControl" px-init="dgExemploInit(event)" px-config="{{dgExemploConfig}}" px-data-init="false" px-check="true" px-item-click="itemClick(event)" px-label-function="dgExemploLabel(event)">
                 </px-data-grid>
             </div>
