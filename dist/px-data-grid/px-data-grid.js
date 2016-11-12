@@ -114,8 +114,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     // a listagem não será construida.
                     return;
                 }
-
-                scope.url = newValue.url || '';         
+                scope.url = newValue.url || '';
+                scope.paging = newValue.paging;
                 scope.method = newValue.method;
                 scope.fields = newValue.fields;
 
@@ -384,6 +384,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         dataTableConfig.pagingType = "simple";
                         dataTableConfig.pageLength = 8;
                     }
+                    dataTableConfig.paging = scope.paging;
                     dataTableConfig.bFilter = true;
                     dataTableConfig.bLengthChange = scope.lengthChange;
                     dataTableConfig.lengthMenu = scope.lengthMenu; //[20, 35, 45];
@@ -463,9 +464,10 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
              * Recuperar dados que são carregados na listagem
              * @return {void}
              */
-            scope.internalControl.getData = function() {
+            scope.internalControl.getData = function(params) {
+                scope.params = params;
                 $timeout(function() {
-                    scope.getData(0, scope.rowsProcess);
+                    scope.getData(0, scope.rowsProcess, scope.params);
                 }, 0);
             };
 
@@ -586,7 +588,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
                 if (info.page === info.pages - 1) {
                     $scope.currentPage = info.page;
                     if ($scope.demand) {
-                        $scope.getData($scope.nextRowFrom, $scope.nextRowTo);
+                        $scope.getData($scope.nextRowFrom, $scope.nextRowTo, $scope.params);
                     }
                 }
 
@@ -794,7 +796,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
      * @param  {number} rowTo   linha final
      * @return {void}
      */
-    $scope.getData = function(rowFrom, rowTo) {
+    $scope.getData = function(rowFrom, rowTo, params) {
         // Verificar se a listagem está em processamento
         if ($scope.internalControl.working) {
             return;
@@ -999,6 +1001,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
         data.url = $scope.url;
         data.method = $scope.method;
+        data.params = $scope.params;
 
         data.schema = $scope.schema;
         if (angular.isDefined($scope.view) && $scope.view !== '') {
@@ -1304,7 +1307,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         }
 
         var data = {};
-        data.schema = $scope.schema;        
+        data.schema = $scope.schema;
         data.table = table;
         data.fields = angular.toJson(arrayFields);
         data.selectedItems = angular.toJson($scope.internalControl.selectedItems);
@@ -1348,7 +1351,7 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
 
     return service;
 
-    function select(data, callback) {
+    function select(data, callback) {        
         data.dsn = pxConfig.PROJECT_DSN;
         data.cfcPath = pxConfig.PX_CFC_PATH;
         data.method = data.method || 'POST';
@@ -1379,10 +1382,15 @@ function pxDataGridService(pxConfig, $http, $rootScope) {
             data.where = '';
         }
 
+        data.params = data.params || {};
+        data.params.rowFrom = data.rowFrom;
+        data.params.rowTo = data.rowTo;
+
         $http({
             method: data.method,
-            url: data.url + '?rowFrom=' + data.rowFrom + '&rowTo=' + data.rowTo,
-            data: data
+            url: data.url,
+            data: data,
+            params: data.params
         }).then(function successCallback(response) {
             callback(response);
         }, function errorCallback(response) {
