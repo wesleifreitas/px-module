@@ -22,7 +22,7 @@ div .px-data-grid table {
 }
 .px-data-grid .dataTable thead .sorting_asc:after, .px-data-grid .dataTable thead .sorting_desc:after, .px-data-grid .dataTable thead .sorting:after {
   font-family: FontAwesome;
-  float: right;
+  padding-left: 5px;
   right: 0;
   color: #999999;
 }
