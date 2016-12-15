@@ -251,8 +251,12 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     }
                     // Edit - End
 
+                    if (index.linkId && index.linkId !== '') {
+                        index.link = true;
+                    }
+
                     // Verificar se o campo é link
-                    if (index.link || index.class) {
+                    if (index.link || index.class) {                        
                         index.width = '' || '1%';
                         scope.links[columnDefs] = index;
                         scope.columnDefs.push({
@@ -266,7 +270,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                                     index.icon = '';
                                 }
                                 if (index.link) {
-                                    return "<div class='link " + index.align + "'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i></div>";
+                                    var value = index.value === false ? '' : data;
+                                    return "<div class='link " + index.align + "'><i link='true' linkId=" + index.linkId + " class='" + index.class + "'>" + index.icon + "</i>" + value + "</div>";
                                 } else {
                                     return "<div class='" + index.align + "'><i class='" + index.class + "'>" + index.icon + "</i></div>";
                                 }

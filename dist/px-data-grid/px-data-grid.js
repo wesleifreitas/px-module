@@ -263,6 +263,9 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     }
                     // Edit - End
 
+                    if(index.linkId && index.linkId !== ''){
+                        index.link = true;
+                    }
                     // Verificar se o campo é link
                     if (index.link || index.class) {
                         index.width = '' || '1%';
