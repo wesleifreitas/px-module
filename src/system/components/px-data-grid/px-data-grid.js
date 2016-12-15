@@ -270,7 +270,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                                     index.icon = '';
                                 }
                                 if (index.link) {
-                                    var value = index.value === false ? '' : data;
+                                    var value = index.value === false ? '' : typeof data === 'string' ? data : '';
 
                                     // Retornar directive
                                     /*var html = "<div class='link " +
