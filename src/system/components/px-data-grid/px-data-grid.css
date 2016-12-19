@@ -3,46 +3,61 @@ div .px-data-grid {
   margin-top: 5px;
 }
 div .px-data-grid table {
-  margin-bottom: 0 !important;  
-  width: 100%;
-  display: block;
-  overflow-x: auto;
+  margin-bottom: 0 !important;
 }
 .px-data-grid table.dataTable.select tbody tr, table.dataTable thead th:first-child {
-  cursor: pointer;
-  width: 1%;
+  cursor: pointer;  /*width: 1%;*/
 }
 .px-data-grid table.dataTable tbody tr, table.dataTable thead th {
-
   /*cursor: pointer;*/
   white-space: nowrap;
 }
 .px-data-grid .dataTable {
   clear: both;
 }
-.px-data-grid .dataTable thead .sorting_asc, .px-data-grid .dataTable thead .sorting_desc, .px-data-grid .dataTable thead .sorting {
+.px-data-grid table.dataTable thead .sorting, .px-data-grid table.dataTable thead .sorting_asc, .px-data-grid table.dataTable thead .sorting_desc, .px-data-grid table.dataTable thead .sorting_asc_disabled, .px-data-grid table.dataTable thead .sorting_desc_disabled {
   cursor: pointer;
+  position: relative
 }
-.px-data-grid .dataTable thead .sorting_asc:after, .px-data-grid .dataTable thead .sorting_desc:after, .px-data-grid .dataTable thead .sorting:after {
-  font-family: FontAwesome;
-  padding-left: 5px;
+.px-data-grid table.dataTable thead .sorting:after, .px-data-grid table.dataTable thead .sorting_asc:after, .px-data-grid table.dataTable thead .sorting_desc:after, .px-data-grid table.dataTable thead .sorting_asc_disabled:after, .px-data-grid table.dataTable thead .sorting_desc_disabled:after {
+  position: absolute;
+  bottom: 8px;
   right: 0;
-  color: #999999;
+  padding-right: 1px;
+  display: block;
+  font-family: FontAwesome;
+  opacity: 0.5
 }
-.px-data-grid .dataTable thead .sorting:after {
-  content: "\f0dc";
+.px-data-grid table.dataTable thead .sorting:after {
+  opacity: 0.2;
+  content: "\f0dc"
 }
-.px-data-grid .dataTable thead .sorting_asc:after {
-  content: "\f0de";
+.px-data-grid table.dataTable thead .sorting_asc:after {
+  content: "\f0de"
 }
-.px-data-grid .dataTable thead .sorting_desc:after {
-  content: "\f0dd";
+.px-data-grid table.dataTable thead .sorting_desc:after {
+  content: "\f0dd"
 }
-.px-data-grid .dataTable thead .sorting_asc:after, .px-data-grid .dataTable thead .sorting_desc:after {
-  color: #1d1d1d;
+.px-data-grid table.dataTable thead .sorting_asc_disabled:after, .px-data-grid table.dataTable thead .sorting_desc_disabled:after {
+  color: #eee
 }
-.px-data-grid .dataTables_wrapper .dataTables_filter label, .px-data-grid .dataTables_wrapper .dataTables_length label {
-  vertical-align: middle;
+div.dataTables_scrollHead .px-data-grid table.dataTable {
+  margin-bottom: 0 !important
+}
+div.dataTables_scrollBody .px-data-grid table {
+  border-top: none;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important
+}
+div.dataTables_scrollBody .px-data-grid table thead .sorting:after, div.dataTables_scrollBody .px-data-grid table thead .sorting_asc:after, div.dataTables_scrollBody .px-data-grid table thead .sorting_desc:after {
+  display: none
+}
+div.dataTables_scrollBody .px-data-grid table tbody tr:first-child th, div.dataTables_scrollBody .px-data-grid table tbody tr:first-child td {
+  border-top: none
+}
+div.dataTables_scrollFoot .px-data-grid table {
+  margin-top: 0 !important;
+  border-top: none
 }
 .px-data-grid .dataTables_wrapper .dataTables_filter input, .px-data-grid .dataTables_wrapper .dataTables_length input, .px-data-grid .dataTables_wrapper .dataTables_filter select, .px-data-grid .dataTables_wrapper .dataTables_length select {
   border: 1px #d9d9d9 solid;
@@ -225,7 +240,4 @@ table .tfoot:last-child {
 .px-data-grid .table-bordered {
   border: none;
   border-top: 1px solid #ddd !important;
-}
-.px-data-grid .dataTables_scrollBody thead .sorting:after{
-  display: none;
 }
