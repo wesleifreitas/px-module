@@ -24,9 +24,10 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      * - fields: Colunas da listagem
      * @type {Object}
      */
-    $scope.dgExemploConfig = {
-        //url: 'data.json',
-        url: 'http://localhost:8080/api/users/',
+    $scope.dgExemploConfig = {        
+        url: 'data.json',        
+        //url: 'http://localhost:8080/api/users/',
+        scrollY: '50vh',    
         method: 'GET',
         fields: [{
             link: true,

@@ -1,5 +1,5 @@
 {
-    "qQuery": [{
+    "query": [{
         "ROW_NUMBER": 1,
         "ID": "100",
         "NOME": "Aparecido Freitas",
