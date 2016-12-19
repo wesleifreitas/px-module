@@ -114,6 +114,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     // a listagem não será construida.
                     return;
                 }
+                scope.scrollY = newValue.scrollY || '';
                 scope.url = newValue.url || '';
                 scope.paging = newValue.paging;
                 scope.method = newValue.method;
@@ -217,7 +218,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                     // Checkbox  - Start
                     if (i === 0 && scope.check === true) {
-                        scope.columns += '<th class="text-left" width="1%"><input name="select_all" value="1" type="checkbox"></th>';
+                        scope.columns += '<th class="text-left" width="1%"><input id="' + scope.id + '_select_all" value="1" type="checkbox"></th>';
                         scope.foot += '<th width="1%"></th>';
 
                         aoColumnsData = {};
@@ -411,6 +412,8 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         dataTableConfig.pagingType = "simple";
                         dataTableConfig.pageLength = 8;
                     }
+                    dataTableConfig.scrollY = scope.scrollY;
+                    //dataTableConfig.scrollCollapse= true;
                     dataTableConfig.paging = scope.paging;
                     dataTableConfig.bFilter = true;
                     dataTableConfig.bLengthChange = scope.lengthChange;
@@ -640,7 +643,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             var $table = table.table().node();
             var $chkbox_all = $('tbody input[type="checkbox"]', $table);
             var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
-            var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+            var chkbox_select_all = $('thead input[id="' + $scope.id + '_select_all"]')[0];
             $scope.internalControl.checkAll = chkbox_select_all;
 
             // Se não possuir nenhum checkbox selecionado
@@ -798,8 +801,9 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             $(this).parent().find('input[type="checkbox"]').trigger('click');
         });
 
+
         // Evento click (selecionar tudo)
-        $('#' + $scope.id + '_pxDataTable thead input[name="select_all"]').on('click', function(e) {
+        $('thead input[id="' + $scope.id + '_select_all"]').on('click', function(e) {
             if (this.checked) {
                 $('#' + $scope.id + '_pxDataTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
             } else {

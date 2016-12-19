@@ -226,6 +226,9 @@ table .tfoot:last-child {
   border: none;
   border-top: 1px solid #ddd !important;
 }
+.px-data-grid .dataTables_scrollBody thead .sorting:after{
+  display: none;
+}
 px-input-search {
 	border: none !important;
 }
