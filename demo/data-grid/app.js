@@ -26,7 +26,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      */
     $scope.dgExemploConfig = {        
         url: 'data.json',        
-        //url: 'http://localhost:8080/api/users/',
+        //url: 'http://localhost:8080/api/users/',        
         scrollY: '50vh',    
         method: 'GET',
         fields: [{
@@ -88,7 +88,7 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
 
     $scope.getData = function() {
         var params = {}
-        if ($scope.filter.nome !== '') {
+        if ($scope.filter && $scope.filter.nome !== '') {
             params.nome = $scope.filter.nome
         }
 
@@ -122,12 +122,9 @@ app.controller('DataGridCtrl', ['$scope', '$locale', function($scope, $locale) {
      * Evento inicializar
      * @return {Void}
      */
-    $scope.dgExemploInit = function(event) {
-        $scope.filter = {
-            nome: ''
-        };
+    $scope.dgExemploInit = function(event) {        
         // Recuperar dados
-        $scope.dgExemploControl.getData();
+        $scope.getData();
     }
 
     function generateUUID() {
