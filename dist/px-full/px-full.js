@@ -2407,9 +2407,14 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         dataTableConfig.pagingType = "simple";
                         dataTableConfig.pageLength = 8;
                     }
+                    dataTableConfig.initComplete = function(settings, json) {
+                        $timeout(function() {
+                            $('#' + scope.id + '_pxDataTable').DataTable().columns.adjust().draw();
+                        }, 0);
+                    }
                     dataTableConfig.scrollX = true;
                     dataTableConfig.scrollY = scope.scrollY;
-                    dataTableConfig.scrollCollapse= true;
+                    //dataTableConfig.scrollCollapse= true;
                     dataTableConfig.paging = scope.paging;
                     dataTableConfig.bFilter = true;
                     dataTableConfig.bLengthChange = scope.lengthChange;
@@ -2447,7 +2452,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                     }
 
                     //requirejs(["dataTables"], function() {
-                    var table = $('#' + scope.id + '_pxDataTable').DataTable();
+                    //var table = $('#' + scope.id + '_pxDataTable').DataTable();
                     scope.internalControl.table = $('#' + scope.id + '_pxDataTable').DataTable();
                     //});
                     // Verificar se o eventos não foram adicionar
@@ -3159,6 +3164,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
     };
 
     $scope.addDataRow = function addDataRow(value) {
+
         // Somar currentRecordCount
         $scope.currentRecordCount++;
 
@@ -3294,6 +3300,12 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         //$scope.internalControl.table.row.add(data).draw();
         $('#' + $scope.id + '_pxDataTable').DataTable().row.add(data).draw();
         //});
+
+        if ($scope.currentRecordCount === 1) {
+            $timeout(function() {
+                $('#' + $scope.id + '_pxDataTable').DataTable().columns.adjust().draw();
+            }, 0)
+        }
     };
 
     /**
