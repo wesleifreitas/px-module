@@ -2407,8 +2407,9 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         dataTableConfig.pagingType = "simple";
                         dataTableConfig.pageLength = 8;
                     }
+                    dataTableConfig.scrollX = true;
                     dataTableConfig.scrollY = scope.scrollY;
-                    //dataTableConfig.scrollCollapse= true;
+                    dataTableConfig.scrollCollapse= true;
                     dataTableConfig.paging = scope.paging;
                     dataTableConfig.bFilter = true;
                     dataTableConfig.bLengthChange = scope.lengthChange;

@@ -6,12 +6,13 @@ div .px-data-grid table {
   margin-bottom: 0 !important;
 }
 .px-data-grid table.dataTable.select tbody tr, table.dataTable thead th:first-child {
-  cursor: pointer;  /*width: 1%;*/
+  cursor: pointer;  
+  /*width: 1%;*/
 }
-.px-data-grid table.dataTable tbody tr, table.dataTable thead th {
-  /*cursor: pointer;*/
+/*.px-data-grid table.dataTable tbody tr, table.dataTable thead th {
+  cursor: pointer;
   white-space: nowrap;
-}
+}*/
 .px-data-grid .dataTable {
   clear: both;
 }
