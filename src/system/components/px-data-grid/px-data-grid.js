@@ -404,7 +404,7 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
                         $timeout(function() {
                             $('#' + scope.id + '_pxDataTable').DataTable().columns.adjust().draw();
                         }, 0);
-                    }
+                    };
                     dataTableConfig.scrollX = true;
                     dataTableConfig.scrollY = scope.scrollY;
                     //dataTableConfig.scrollCollapse= true;
@@ -808,11 +808,15 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         });
 
         // Evento draw
-        $('#' + $scope.id + '_pxDataTable').on('draw', function() {
+        // https://datatables.net/reference/event/draw
+        $('#' + $scope.id + '_pxDataTable').on('draw.dt', function() {            
             // Atualizar dataTable (Selecionar tudo)
             $scope.updateDataTableSelectAllCtrl($scope.internalControl.table);
         });
 
+        $timeout(function() {
+            $('#' + $scope.id + '_pxDataTable').DataTable().columns.adjust().draw();
+        }, 0);
     };
 
     /**
@@ -1293,12 +1297,6 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         //$scope.internalControl.table.row.add(data).draw();
         $('#' + $scope.id + '_pxDataTable').DataTable().row.add(data).draw();
         //});
-
-        if ($scope.currentRecordCount === 1) {
-            $timeout(function() {
-                $('#' + $scope.id + '_pxDataTable').DataTable().columns.adjust().draw();
-            }, 0)
-        }
     };
 
     /**
