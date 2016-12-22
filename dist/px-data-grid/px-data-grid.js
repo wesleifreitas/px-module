@@ -518,9 +518,25 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
             /**
              * Adicionar linha de registro
              * @param {object} value valor que será inserido na listagem
+             * @param {boolean} temp adicionar linhas em dataTemp?
              */
-            scope.internalControl.addDataRow = function(value) {
-                scope.addDataRow(value);
+            scope.internalControl.addDataRow = function(value, temp) {
+                scope.addDataRow(value, temp);
+            };
+
+            /**
+             * Adicionar linhas de registro
+             * @param {object} data linhas             
+             */
+            scope.internalControl.addDataRows = function(data) {
+                scope.dataTemp = [];
+                // Loop na query
+                angular.forEach(data, function(index) {
+                    scope.addDataRow(index, true);
+                });
+
+                $('#' + scope.id + '_pxDataTable').DataTable().rows.add(scope.dataTemp).draw();
+                delete scope.dataTemp;
             };
 
             /**
@@ -821,7 +837,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
 
         // Evento draw
         // https://datatables.net/reference/event/draw
-        $('#' + $scope.id + '_pxDataTable').on('draw.dt', function() {            
+        $('#' + $scope.id + '_pxDataTable').on('draw.dt', function() {
             // Atualizar dataTable (Selecionar tudo)
             $scope.updateDataTableSelectAllCtrl($scope.internalControl.table);
         });
@@ -1093,10 +1109,14 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             } else {
                 // Verifica se a quantidade de registros é maior que 0
                 if (response.data.query.length > 0) {
+                    $scope.dataTemp = [];
                     // Loop na query
                     angular.forEach(response.data.query, function(index) {
-                        $scope.addDataRow(index);
+                        $scope.addDataRow(index, true);
                     });
+
+                    $('#' + $scope.id + '_pxDataTable').DataTable().rows.add($scope.dataTemp).draw();
+                    delete $scope.dataTemp;
 
                     $scope.recordCount = response.data.recordCount;
                     $scope.nextRowFrom = response.data.rowFrom + $scope.rowsProcess;
@@ -1172,7 +1192,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         //});
     };
 
-    $scope.addDataRow = function addDataRow(value) {
+    $scope.addDataRow = function addDataRow(value, temp) {
 
         // Somar currentRecordCount
         $scope.currentRecordCount++;
@@ -1304,11 +1324,11 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             }
         });
 
-        // Atualizar dados do dataTable                                        
-        //requirejs(["dataTables"], function() {        
-        //$scope.internalControl.table.row.add(data).draw();
-        $('#' + $scope.id + '_pxDataTable').DataTable().row.add(data).draw();
-        //});
+        if (temp) {            
+            $scope.dataTemp.push(data);
+        } else {
+            $('#' + $scope.id + '_pxDataTable').DataTable().row.add(data).draw();
+        }
     };
 
     /**
