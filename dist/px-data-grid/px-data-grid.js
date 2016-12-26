@@ -537,6 +537,10 @@ module.directive('pxDataGrid', ['pxConfig', 'pxArrayUtil', 'pxUtil', '$timeout',
 
                 $('#' + scope.id + '_pxDataTable').DataTable().rows.add(scope.dataTemp).draw();
                 delete scope.dataTemp;
+
+                $timeout(function() {
+                    $('#' + scope.id + '_pxDataTable').DataTable().columns.adjust().draw();
+                }, 500);
             };
 
             /**
