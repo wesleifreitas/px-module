@@ -1357,6 +1357,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
             //requirejs(["dataTables"], function() {
             $('#' + $scope.id + '_pxDataTable').DataTable().clear().draw();
             //});
+            $scope.reset();
         }
     };
 
