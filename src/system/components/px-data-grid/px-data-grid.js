@@ -1193,7 +1193,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         var data = {};
         data.value = {};
 
-        data.pxDataGridRowNumber = $scope.currentRecordCount;
+        data.pxDataGridRowNumber = $scope.currentRecordCount - 1;
         data.edit = {};
 
         // Loop nas colunas da grid
