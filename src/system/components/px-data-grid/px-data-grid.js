@@ -1333,6 +1333,7 @@ function pxDataGridCtrl(pxConfig, pxUtil, pxArrayUtil, pxDateUtil, pxMaskUtil, p
         } else {
             $scope.internalControl.table.rows(value).remove().draw();
         }
+        $scope.internalControl.selectedItems = [];
     };
 
     /**
